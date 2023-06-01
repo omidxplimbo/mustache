@@ -1,7 +1,7 @@
 package main
 
 import (
-	"mustache/recon-cr/base"
+	"github.com/omidxplimbo/mustache/base"
 )
 
 func main() {
