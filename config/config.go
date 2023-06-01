@@ -8,9 +8,15 @@ import (
 )
 
 type Config struct {
-	AppName   string `json:"appName"`
-	DbPrefix  string `json:"dbPrefix"`
-	DbTimeout int    `json:"dbTimeout"`
+	AppName     string   `json:"appName"`
+	DbPrefix    string   `json:"dbPrefix"`
+	DbTimeout   int      `json:"dbTimeout"`
+	MongoUrl    string   `json:"mongoUrl"`
+	Collections []string `json:"collections"`
+	PublicError struct {
+		ErrorConnectDB   string `json:"errorConnectDb"`
+		SubdomainAddToDB string `json:"subdomainAddToDatabase"`
+	} `json:"publicErrors"`
 }
 
 func ProjectConfig() Config {

@@ -7,7 +7,6 @@ import (
 	"github.com/omidxplimbo/mustache/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
-	"time"
 )
 
 func InitiateProject(projectName string) {
@@ -16,18 +15,10 @@ func InitiateProject(projectName string) {
 	configProject := config.ProjectConfig()
 
 	// Connect to database
-	client := db.ConnectToDatabase()
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
-	defer cancel()
-
-	err := client.Connect(ctx)
-	if err != nil {
-		log.Fatal("Connect to database with error. See logs")
-	}
+	client, _ := db.ConnectToDatabase()
 
 	// Check if database exists
-	dbName := "mustache_" + projectName
+	dbName := configProject.DbPrefix + projectName
 	filter := bson.D{}
 	databases, err := client.ListDatabaseNames(context.Background(), filter)
 	if err != nil {
@@ -43,31 +34,33 @@ func InitiateProject(projectName string) {
 
 	// Create database and collections if it doesn't exist
 	if !dbExists {
-		err = client.Database(dbName).CreateCollection(context.Background(), "domain")
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[0])
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = client.Database(dbName).CreateCollection(context.Background(), "cidr")
+
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[1])
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = client.Database(dbName).CreateCollection(context.Background(), "asn")
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[2])
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = client.Database(dbName).CreateCollection(context.Background(), "subdomain")
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[3])
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = client.Database(dbName).CreateCollection(context.Background(), "urls")
+
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[4])
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = client.Database(dbName).CreateCollection(context.Background(), "parameters")
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[5])
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = client.Database(dbName).CreateCollection(context.Background(), "wordlist")
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[6])
 		if err != nil {
 			log.Fatal(err)
 		}

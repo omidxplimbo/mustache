@@ -3,28 +3,16 @@ package project
 import (
 	"context"
 	"fmt"
-	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"os"
-	"time"
 )
 
 func RemoveProject(projectName string) {
-	// Get project config
-	configProject := config.ProjectConfig()
 
 	// Connect to database
-	client := db.ConnectToDatabase()
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
-	defer cancel()
-
-	err := client.Connect(ctx)
-	if err != nil {
-		log.Fatal("Connect to database with error. See logs")
-	}
+	client, _ := db.ConnectToDatabase()
 
 	// Check if database exists
 	dbName := "mustache_" + projectName

@@ -2,5 +2,19 @@
   "appName": "mustache",
   "dbPrefix": "mustache_",
   "dbTimeout": 10000,
-  "logAddress": "/tmp/mustache/logs"
+  "logAddress": "/tmp/mustache/logs",
+  "mongoUrl": "mongodb://localhost:27017",
+  "collections": [
+    "subdomain",
+    "domain",
+    "cidr",
+    "asn",
+    "urls",
+    "parameters",
+    "wordlist"
+  ],
+  "publicErrors": {
+    "errorConnectDb": "Connect to database with error. See logs",
+    "subdomainAddToDatabase": "Subdomain add to database"
+  }
 }

@@ -9,7 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"os/exec"
-	"time"
 )
 
 func BackupAllProject(projectName string, path string) {
@@ -18,15 +17,7 @@ func BackupAllProject(projectName string, path string) {
 	configProject := config.ProjectConfig()
 
 	// Connect to database
-	client := db.ConnectToDatabase()
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
-	defer cancel()
-
-	err := client.Connect(ctx)
-	if err != nil {
-		logger.Fetal("Connect to database with error. See logs")
-	}
+	client, _ := db.ConnectToDatabase()
 
 	// Set up MongoDB export options
 	dbName := configProject.DbPrefix + projectName

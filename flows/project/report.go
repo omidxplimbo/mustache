@@ -8,8 +8,6 @@ import (
 	"github.com/omidxplimbo/mustache/db"
 	"github.com/omidxplimbo/mustache/logger"
 	"go.mongodb.org/mongo-driver/bson"
-	"log"
-	"time"
 )
 
 func GetReport(projectName string) {
@@ -17,15 +15,7 @@ func GetReport(projectName string) {
 	configProject := config.ProjectConfig()
 
 	// Connect to database
-	client := db.ConnectToDatabase()
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
-	defer cancel()
-
-	err := client.Connect(ctx)
-	if err != nil {
-		log.Fatal("Connect to database with error. See logs")
-	}
+	client, _ := db.ConnectToDatabase()
 
 	// Set up MongoDB export options
 	dbName := configProject.DbPrefix + projectName
