@@ -1,0 +1,6 @@
+{
+  "appName": "mustache",
+  "dbPrefix": "mustache_",
+  "dbTimeout": 10000,
+  "logAddress": "/tmp/mustache/logs"
+}
