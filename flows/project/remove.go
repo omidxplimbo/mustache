@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/omidxplimbo/mustache/db"
+	"github.com/omidxplimbo/mustache/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"os"
@@ -30,7 +31,7 @@ func RemoveProject(projectName string) {
 	}
 
 	if !dbExists {
-		fmt.Printf("Project %s dose not exists\n", projectName)
+		logger.Warning(fmt.Sprintf("Project %s dose not exists\n", projectName))
 	} else {
 		fmt.Print("Are you sure you want to delete the database? With this action all project data will remove from database (y/N): ")
 		var confirmation string
@@ -45,7 +46,10 @@ func RemoveProject(projectName string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Project %s deleted successfully\n", projectName)
+
+		fmt.Println()
+		fmt.Println()
+		logger.Info(fmt.Sprintf("Project %s deleted successfully", projectName))
 	}
 
 }
