@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/logger"
@@ -25,7 +26,7 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 	configProject := config.ProjectConfig()
 
 	// Connect to database
-	client, ctx := ConnectToDatabase()
+	client, _ := ConnectToDatabase()
 
 	// Check if database exists
 	dbName := configProject.DbPrefix + projectName
@@ -37,6 +38,10 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 
 	// Insert the array of data into the MongoDB collection
 	collection := client.Database(dbName).Collection(configProject.Collections[0])
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
+	defer cancel()
+
 	_, err := collection.InsertMany(ctx, dataInterface)
 	if err != nil {
 		log.Fatal(err)
