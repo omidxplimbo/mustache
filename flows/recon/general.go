@@ -32,6 +32,7 @@ func General(projectName string, target string) {
 
 	// Parse each YAML file
 	for _, file := range yamlFiles {
+
 		// Read the YAML file
 		yamlFile, err := ioutil.ReadFile(file)
 		if err != nil {
@@ -44,6 +45,8 @@ func General(projectName string, target string) {
 		if err != nil {
 			logger.Fetal("Yaml Configuration not exist")
 		}
+
+		logger.Info(fmt.Sprintf("Running routin flow %s at: %s", data["name"].(string), time.DateTime))
 
 		// Execute commands
 		runYaml(data, projectName, target)
