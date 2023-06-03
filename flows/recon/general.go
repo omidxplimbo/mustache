@@ -53,16 +53,13 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 	// Extract database and collection names from YAML data
 	databaseName := data["database"].(string)
 	collectionName := data["collection"].(string)
-	checkDatabase := false
-
-	if databaseName != "" && collectionName != "" {
-		checkDatabase = true
-	}
 
 	client, ctx := db.ConnectToDatabase()
 	collection := client.Database(databaseName).Collection(collectionName)
 
 	commands := data["command"].([]interface{})
+
+	var subdomains []subdomain // Declare subdomains variable outside of loop
 
 	for _, cmd := range commands {
 		command, ok := cmd.(string)
@@ -82,7 +79,6 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 		}
 
 		// Extract subdomains from command output
-		var subdomains []subdomain
 		for _, line := range strings.Split(output, "\n") {
 			if line == "" {
 				continue
@@ -94,17 +90,14 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 			}
 			subdomains = append(subdomains, subdomain)
 		}
+	}
 
-		if checkDatabase {
-			// Insert subdomains into MongoDB collection
-			for _, subdomain := range subdomains {
-				_, err := collection.InsertOne(ctx, subdomain)
-				if err != nil {
-					logger.Fetal(fmt.Sprintf("MongoDB insert error: %v\n", err))
-				}
-			}
+	// Insert subdomains into MongoDB collection
+	for _, subdomain := range subdomains {
+		_, err := collection.InsertOne(ctx, subdomain)
+		if err != nil {
+			logger.Fetal(fmt.Sprintf("MongoDB insert error: %v\n", err))
 		}
-
 	}
 }
 
