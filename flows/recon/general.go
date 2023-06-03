@@ -22,7 +22,8 @@ type subdomain struct {
 
 func General(projectName string, target string) {
 
-	logger.Info(fmt.Sprintf("Running general flow at: %s", time.DateTime))
+	projectConfig := config.ProjectConfig()
+	logger.Info(fmt.Sprintf("Running general flow at: %s", time.Now().Format(projectConfig.TimeShow)))
 
 	// List YAML files in a directory
 	yamlFiles, err := filepath.Glob("flows/recon/configs/general/*.yaml")
@@ -46,12 +47,12 @@ func General(projectName string, target string) {
 			logger.Fetal("Yaml Configuration not exist")
 		}
 
-		logger.Info(fmt.Sprintf("Running routin flow %s at: %s", data["name"].(string), time.DateTime))
+		logger.Info(fmt.Sprintf("Running routin flow %s at: %s", data["name"].(string), time.Now().Format(projectConfig.TimeShow)))
 
 		// Execute commands
 		runYaml(data, projectName, target)
 
-		logger.Info(fmt.Sprintf("General flow done at: %s", time.DateTime))
+		logger.Info(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
 	}
 }
 

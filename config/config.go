@@ -12,6 +12,7 @@ type Config struct {
 	DbPrefix    string   `json:"dbPrefix"`
 	DbTimeout   int      `json:"dbTimeout"`
 	MongoUrl    string   `json:"mongoUrl"`
+	TimeShow    string   `json:"timeShow"`
 	Collections []string `json:"collections"`
 	PublicError struct {
 		ErrorConnectDB   string `json:"errorConnectDb"`
