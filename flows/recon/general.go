@@ -21,6 +21,9 @@ type subdomain struct {
 }
 
 func General(projectName string, target string) {
+
+	logger.Info(fmt.Sprintf("Running general flow at: %s", time.DateTime))
+
 	// List YAML files in a directory
 	yamlFiles, err := filepath.Glob("flows/recon/configs/general/*.yaml")
 	if err != nil || len(yamlFiles) == 0 {
@@ -45,7 +48,7 @@ func General(projectName string, target string) {
 		// Execute commands
 		runYaml(data, projectName, target)
 
-		logger.Info("General flow run successfully")
+		logger.Info(fmt.Sprintf("General flow done at: %s", time.DateTime))
 	}
 }
 
@@ -123,6 +126,7 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 			}
 		}
 	}
+	logger.Info("Add data to database done.")
 
 }
 
