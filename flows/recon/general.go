@@ -41,15 +41,16 @@ func General(projectName string, target string) {
 		if err != nil {
 			logger.Fetal("Yaml Configuration not exist")
 		}
-		// Execute commands
-		runCommands(data, projectName, target)
 
-		fmt.Println("-------------------")
+		// Execute commands
+		runYaml(data, projectName, target)
+
+		logger.Info("General flow run successfully")
 	}
 }
 
 // Execute commands in the YAML data
-func runCommands(data map[string]interface{}, projectName string, domain string) {
+func runYaml(data map[string]interface{}, projectName string, domain string) {
 
 	// Extract database and collection names from YAML data
 	collectionName := data["collection"].(string)
@@ -65,13 +66,13 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
 	defer cancel()
 
+	// Get database
 	collection := client.Database(dbName).Collection(collectionName)
 
 	var subdomains []subdomain // Declare subdomains variable outside of loop
 
 	commands, ok := data["command"].([]interface{})
 	if !ok {
-		fmt.Println("No commands found")
 		return
 	}
 
@@ -86,33 +87,43 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 		command = replaceVariables(command, projectName, domain)
 
 		// Run the command
+		logger.Info(fmt.Sprintf("Running Process: " + command))
 		output, err := executeCommand(command)
 		if err != nil {
 			fmt.Printf("Command execution error: %v\n", err)
 			continue
 		}
+		logger.Info(fmt.Sprintf("Run Process Successfully: " + command))
 
-		// Extract subdomains from command output
-		for _, line := range strings.Split(output, "\n") {
-			if line == "" {
-				continue
+		switch data["name"].(string) {
+		case "subdomain":
+			// Extract subdomains from command output
+			for _, line := range strings.Split(output, "\n") {
+				if line == "" {
+					continue
+				}
+				subdomain := subdomain{
+					Subdomain: strings.TrimSpace(line),
+					Created:   time.Now(),
+					Updated:   time.Now(),
+				}
+				subdomains = append(subdomains, subdomain)
 			}
-			subdomain := subdomain{
-				Subdomain: strings.TrimSpace(line),
-				Created:   time.Now(),
-				Updated:   time.Now(),
-			}
-			subdomains = append(subdomains, subdomain)
+		default:
+			return
 		}
 	}
 
-	// Insert subdomains into MongoDB collection
-	for _, subdomain := range subdomains {
-		_, err := collection.InsertOne(ctx, subdomain)
-		if err != nil {
-			logger.Fetal(fmt.Sprintf("MongoDB insert error: %v\n", err))
+	if len(subdomains) > 0 {
+		// Insert subdomains into MongoDB collection
+		for _, subdomain := range subdomains {
+			_, err := collection.InsertOne(ctx, subdomain)
+			if err != nil {
+				logger.Fetal(fmt.Sprintf("MongoDB insert error: %v\n", err))
+			}
 		}
 	}
+
 }
 
 // Replace variables in the command
