@@ -23,8 +23,8 @@ type subdomain struct {
 
 func General(projectName string, target string) {
 	// List YAML files in a directory
-	yamlFiles, err := filepath.Glob("config/subdomain.yaml")
-	if err != nil {
+	yamlFiles, err := filepath.Glob("flows/recon/configs/general/*.yaml")
+	if err != nil || len(yamlFiles) == 0 {
 		logger.Fetal("Yaml Configuration not exist")
 	}
 
@@ -42,7 +42,6 @@ func General(projectName string, target string) {
 		if err != nil {
 			logger.Fetal("Yaml Configuration not exist")
 		}
-
 		// Execute commands
 		runCommands(data, projectName, target)
 
