@@ -21,7 +21,7 @@ type subdomain struct {
 	Update    time.Time `bson:"updated_at"`
 }
 
-func General(projectName string, domain string) {
+func General(projectName string, target string) {
 	// List YAML files in a directory
 	yamlFiles, err := filepath.Glob("config/subdomain.yaml")
 	if err != nil {
@@ -44,7 +44,7 @@ func General(projectName string, domain string) {
 		}
 
 		// Execute commands
-		runCommands(data, projectName, domain)
+		runCommands(data, projectName, target)
 
 		fmt.Println("-------------------")
 	}

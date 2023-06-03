@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	projectModule "github.com/omidxplimbo/mustache/modules/project"
+	reconModule "github.com/omidxplimbo/mustache/modules/recon"
 	"os"
 )
 
@@ -32,15 +33,19 @@ func HandleSwitch() {
 	case "continues":
 		continuesHandle(*flow, *projectName, *dbName, *pathFile, *target)
 	case "recon":
-		reconHandle(*flow, *projectName, *dbName, *pathFile, *target)
+		reconHandle(*flow, *projectName, *target)
 	default:
 		fmt.Println("Wrong Selected Module. Please use -h for get help")
 	}
 
 }
 
-func reconHandle(flow string, projectName string, dbName string, path string, target string) {
+func reconHandle(flow string, projectName string, target string) {
+
+	recon := reconModule.Recon{}
 	switch flow {
+	case "general":
+		recon.General(projectName, target)
 	default:
 		fmt.Println("Recon Flow Very Soon")
 	}
