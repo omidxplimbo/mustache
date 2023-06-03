@@ -1,0 +1,13 @@
+name: subdomain
+description: subdomain enumeration passive and active
+command:
+  - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent
+  - findomain -t $domain$ | tee $projectName$-findomain.txt
+  - cat $projectName$-subfinder.txt $projectName$-findomain.txt | sort -u > $projectName$-final.txt
+  - rm $projectName$-subfinder.txt $projectName$-findomain.txt
+  - - rm $projectName$-final.txt
+
+database: $database$
+collection: subdomain
+finalData: $projectName$-final.txt
+

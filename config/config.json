@@ -4,6 +4,9 @@
   "dbTimeout": 10000,
   "logAddress": "/tmp/mustache/logs",
   "mongoUrl": "mongodb://localhost:27017",
+  "addresses": {
+    "binary": "mustache/binary"
+  },
   "collections": [
     "subdomain",
     "domain",
@@ -11,7 +14,8 @@
     "asn",
     "urls",
     "parameters",
-    "wordlist"
+    "wordlist",
+    "screenshot"
   ],
   "publicErrors": {
     "errorConnectDb": "Connect to database with error. See logs",

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/db"
+	"github.com/omidxplimbo/mustache/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
 )
@@ -64,8 +65,12 @@ func InitiateProject(projectName string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Project %s created successfully\n", projectName)
+		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[7])
+		if err != nil {
+			log.Fatal(err)
+		}
+		logger.Info(fmt.Sprintf("Project %s created successfully\n", projectName))
 	} else {
-		fmt.Printf("Project %s already exists\n", projectName)
+		logger.Warning(fmt.Sprintf("Project %s already exists\n", projectName))
 	}
 }
