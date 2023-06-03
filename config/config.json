@@ -1,7 +1,7 @@
 {
   "appName": "mustache",
   "dbPrefix": "mustache_",
-  "dbTimeout": 10000,
+  "dbTimeout": 100000,
   "logAddress": "/tmp/mustache/logs",
   "mongoUrl": "mongodb://localhost:27017",
   "addresses": {

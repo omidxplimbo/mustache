@@ -18,7 +18,7 @@ import (
 type subdomain struct {
 	Subdomain string    `bson:"subdomain"`
 	Created   time.Time `bson:"created_at"`
-	Update    time.Time `bson:"updated_at"`
+	Updated   time.Time `bson:"updated_at"`
 }
 
 func General(projectName string, target string) {
@@ -61,7 +61,6 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 
 	if databaseName != "" && collectionName != "" {
 		checkDatabase = true
-
 		// Create MongoDB session and collection
 		client, ctxData := db.ConnectToDatabase()
 		ctx = ctxData
@@ -96,6 +95,7 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 			subdomain := subdomain{
 				Subdomain: strings.TrimSpace(line),
 				Created:   time.Now(),
+				Updated:   time.Now(),
 			}
 			subdomains = append(subdomains, subdomain)
 		}
