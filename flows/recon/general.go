@@ -130,7 +130,7 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 			}
 		}
 	}
-	logger.Info("Add data to database done.")
+	logger.Info(fmt.Sprintf("Add data to database done at: %s", time.Now().Format(configProject.TimeShow)))
 
 }
 
