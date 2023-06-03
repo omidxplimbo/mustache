@@ -5,7 +5,7 @@ command:
   - findomain -t $domain$ | tee $projectName$-findomain.txt
   - cat $projectName$-subfinder.txt $projectName$-findomain.txt | sort -u > $projectName$-final.txt
   - rm $projectName$-subfinder.txt $projectName$-findomain.txt
-  - - rm $projectName$-final.txt
+  - rm $projectName$-final.txt
 
 database: $database$
 collection: subdomain
