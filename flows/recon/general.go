@@ -1,12 +1,10 @@
 package recon
 
 import (
-	"context"
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/db"
 	"github.com/omidxplimbo/mustache/logger"
-	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os/exec"
@@ -56,16 +54,13 @@ func runCommands(data map[string]interface{}, projectName string, domain string)
 	databaseName := data["database"].(string)
 	collectionName := data["collection"].(string)
 	checkDatabase := false
-	var collection *mongo.Collection
-	var ctx context.Context
 
 	if databaseName != "" && collectionName != "" {
 		checkDatabase = true
-		// Create MongoDB session and collection
-		client, ctxData := db.ConnectToDatabase()
-		ctx = ctxData
-		collection = client.Database(databaseName).Collection(collectionName)
 	}
+
+	client, ctx := db.ConnectToDatabase()
+	collection := client.Database(databaseName).Collection(collectionName)
 
 	commands := data["command"].([]interface{})
 
