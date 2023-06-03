@@ -1,10 +1,12 @@
 package recon
 
 import (
+	"context"
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
-	"github.com/omidxplimbo/mustache/db"
 	"github.com/omidxplimbo/mustache/logger"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os/exec"
@@ -51,15 +53,40 @@ func General(projectName string, target string) {
 func runCommands(data map[string]interface{}, projectName string, domain string) {
 
 	// Extract database and collection names from YAML data
-	databaseName := data["database"].(string)
-	collectionName := data["collection"].(string)
+	databaseName, ok := data["database"].(string)
+	if !ok {
+		fmt.Println("Invalid database name")
+		return
+	}
+	collectionName, ok := data["collection"].(string)
+	if !ok {
+		fmt.Println("Invalid collection name")
+		return
+	}
 
-	client, ctx := db.ConnectToDatabase()
+	// Create MongoDB session and collection
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		fmt.Printf("MongoDB client error: %v\n", err)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10000*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		fmt.Printf("MongoDB connection error: %v\n", err)
+		return
+	}
+	defer client.Disconnect(ctx)
 	collection := client.Database(databaseName).Collection(collectionName)
 
-	commands := data["command"].([]interface{})
-
 	var subdomains []subdomain // Declare subdomains variable outside of loop
+
+	commands, ok := data["command"].([]interface{})
+	if !ok {
+		fmt.Println("No commands found")
+		return
+	}
 
 	for _, cmd := range commands {
 		command, ok := cmd.(string)
