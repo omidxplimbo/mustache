@@ -1,7 +1,6 @@
 package recon
 
 import (
-	"context"
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/db"
@@ -12,16 +11,6 @@ import (
 	"strings"
 	"time"
 )
-
-type Subdomain struct {
-	Subdomain   string    `bson:"subdomain"`
-	Created     time.Time `bson:"created_at"`
-	Updated     time.Time `bson:"updated_at"`
-	Cidr        string    `bson:"cidr"`
-	Asn         string    `bson:"asn"`
-	Cdn         string    `bson:"cdn"`
-	HttpService bool      `bson:"httpService"`
-}
 
 func SubDomain(projectName string, target string) {
 
@@ -52,29 +41,12 @@ func SubDomain(projectName string, target string) {
 // Execute commands in the YAML data
 func runYaml(data map[string]interface{}, projectName string, domain string) {
 
-	// Extract database and collection names from YAML data
-	collectionName := data["collection"].(string)
-
-	// Get project config
-	configProject := config.ProjectConfig()
-
-	// Connect to database
-	client, _ := db.ConnectToDatabase()
-
-	// Check if database exists
-	dbName := configProject.DbPrefix + projectName
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
-	defer cancel()
-
-	// Get database
-	collection := client.Database(dbName).Collection(collectionName)
-
-	var subdomains []Subdomain // Declare subdomains variable outside of loop
-
 	commands, ok := data["command"].([]interface{})
 	if !ok {
 		return
 	}
+
+	var subdomains []db.Subdomain
 
 	for _, cmd := range commands {
 		command, ok := cmd.(string)
@@ -95,40 +67,30 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 		}
 		logger.Info(fmt.Sprintf("Run Process Successfully: " + command))
 
-		switch data["name"].(string) {
-		case "subdomain":
-			// Extract subdomains from command output
-			for _, line := range strings.Split(output, "\n") {
-				if line == "" {
-					continue
-				}
-				subdomain := Subdomain{
-					Subdomain:   strings.TrimSpace(line),
-					Created:     time.Now(),
-					Updated:     time.Now(),
-					Cidr:        "",
-					Asn:         "",
-					Cdn:         "",
-					HttpService: false,
-				}
-				subdomains = append(subdomains, subdomain)
+		for _, line := range strings.Split(output, "\n") {
+			if line == "" {
+				continue
 			}
-		default:
-			return
+			subdomain := db.Subdomain{
+				Domain:      "",
+				Subdomain:   strings.TrimSpace(line),
+				CreatedDate: time.Now(),
+				UpdatedDate: time.Now(),
+				IP:          "",
+				CIDR:        "",
+				Http:        false,
+				CDN:         "",
+			}
+			subdomains = append(subdomains, subdomain)
 		}
+
 	}
 
+	// Add data to database
 	if len(subdomains) > 0 {
-		// Insert subdomains into MongoDB collection
-		for _, subdomain := range subdomains {
-			_, err := collection.InsertOne(ctx, subdomain)
-			if err != nil {
-				logger.Fetal(fmt.Sprintf("MongoDB insert error: %v\n", err))
-			}
-		}
+		subdomainDb := db.Subdomain{}
+		subdomainDb.InsertSubdomain(subdomains, projectName)
 	}
-	logger.Info(fmt.Sprintf("Add data to database done at: %s", time.Now().Format(configProject.TimeShow)))
-
 }
 
 // Replace variables in the command

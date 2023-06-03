@@ -7,6 +7,4 @@ command:
   - rm $projectName$-subfinder.txt $projectName$-findomain.txt
   - rm $projectName$-final.txt
 
-collection: subdomain
-finalData: $projectName$-final.txt
 

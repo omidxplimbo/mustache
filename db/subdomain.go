@@ -9,13 +9,14 @@ import (
 )
 
 type Subdomain struct {
-	Domain       string    `bson:"domain"`
-	Subdomain    string    `bson:"subdomain"`
-	CreatedDate  time.Time `bson:"created_date"`
-	IP           string    `bson:"ip"`
-	CIDR         string    `bson:"cidr"`
-	HTTPXService bool      `bson:"httpx_service"`
-	CDN          string    `bson:"cdn"`
+	Domain      string    `bson:"domain"`
+	Subdomain   string    `bson:"subdomain"`
+	CreatedDate time.Time `bson:"created_date"`
+	UpdatedDate time.Time `bson:"updated_date"`
+	IP          string    `bson:"ip"`
+	CIDR        string    `bson:"cidr"`
+	Http        bool      `bson:"http"`
+	CDN         string    `bson:"cdn"`
 }
 
 func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
@@ -41,6 +42,6 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 		log.Fatal(err)
 	}
 
-	logger.Info(fmt.Sprintf("Subdomains added to %s project", projectName))
+	logger.Info(fmt.Sprintf("Subdomains added to %s project at: %s", projectName, time.Now().Format(configProject.TimeShow)))
 
 }
