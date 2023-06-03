@@ -7,7 +7,6 @@ command:
   - rm $projectName$-subfinder.txt $projectName$-findomain.txt
   - rm $projectName$-final.txt
 
-database: $database$
 collection: subdomain
 finalData: $projectName$-final.txt
 
