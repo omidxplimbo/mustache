@@ -15,9 +15,13 @@ import (
 )
 
 type subdomain struct {
-	Subdomain string    `bson:"subdomain"`
-	Created   time.Time `bson:"created_at"`
-	Updated   time.Time `bson:"updated_at"`
+	Subdomain   string    `bson:"subdomain"`
+	Created     time.Time `bson:"created_at"`
+	Updated     time.Time `bson:"updated_at"`
+	Cidr        string    `bson:"cidr"`
+	Asn         string    `bson:"asn"`
+	Cdn         string    `bson:"cdn"`
+	HttpService bool      `bson:"httpService"`
 }
 
 func General(projectName string, target string) {
@@ -110,9 +114,13 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 					continue
 				}
 				subdomain := subdomain{
-					Subdomain: strings.TrimSpace(line),
-					Created:   time.Now(),
-					Updated:   time.Now(),
+					Subdomain:   strings.TrimSpace(line),
+					Created:     time.Now(),
+					Updated:     time.Now(),
+					Cidr:        "",
+					Asn:         "",
+					Cdn:         "",
+					HttpService: false,
 				}
 				subdomains = append(subdomains, subdomain)
 			}
