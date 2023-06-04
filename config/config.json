@@ -1,12 +1,15 @@
 {
   "appName": "mustache",
   "dbPrefix": "mustache_",
-  "dbTimeout": 100000,
-  "logAddress": "/tmp/mustache/logs",
+  "dbTimeout": 10000,
   "mongoUrl": "mongodb://localhost:27017",
   "timeShow": "2006-01-02 15:04:05",
   "addresses": {
-    "binary": "mustache/binary"
+    "wordLists": "{{home}}/mustache/wordLists",
+    "resolvers": "{{home}}/mustache/resolvers",
+    "configs": "{{home}}/mustache/configs",
+    "binaries": "{{home}}/mustache/binaries",
+    "logs": "{{home}}/mustache/logs"
   },
   "collections": [
     "subdomain",

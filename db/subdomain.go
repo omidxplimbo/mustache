@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/logger"
-	"log"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
@@ -31,22 +33,37 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 	// Check if database exists
 	dbName := configProject.DbPrefix + projectName
 
-	var dataInterface []interface{}
-	for _, d := range data {
-		dataInterface = append(dataInterface, d)
-	}
-
 	// Insert the array of data into the MongoDB collection
 	collection := client.Database(dbName).Collection(configProject.Collections[0])
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configProject.DbTimeout)*time.Second)
-	defer cancel()
+	var updates []mongo.WriteModel
 
-	_, err := collection.InsertMany(ctx, dataInterface)
-	if err != nil {
-		log.Fatal(err)
+	for _, subdomain := range data {
+		filter := bson.M{"subdomain": subdomain.Subdomain}
+		update := bson.M{
+			"$set": bson.M{
+				"domain":       subdomain.Domain,
+				"updated_date": time.Now(),
+				"ip":           subdomain.IP,
+				"cidr":         subdomain.CIDR,
+				"http":         subdomain.Http,
+				"cdn":          subdomain.CDN,
+			},
+			"$setOnInsert": bson.M{"created_date": time.Now()},
+		}
+		updateModel := mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update).SetUpsert(true)
+		updates = append(updates, updateModel)
 	}
 
+	opts := options.BulkWrite().SetOrdered(false)
+
+	result, err := collection.BulkWrite(context.Background(), updates, opts)
+	if err != nil {
+		logger.Fetal(err.Error())
+	}
+
+	logger.Info(fmt.Sprintf("Matched %v documents, updated %v documents\n", result.MatchedCount, result.ModifiedCount))
+	logger.Info(fmt.Sprintf("Inserted %v documents\n", result.UpsertedCount))
 	logger.Info(fmt.Sprintf("Subdomains added to %s project at: %s", projectName, time.Now().Format(configProject.TimeShow)))
 
 }

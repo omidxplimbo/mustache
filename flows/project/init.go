@@ -7,6 +7,8 @@ import (
 	"github.com/omidxplimbo/mustache/db"
 	"github.com/omidxplimbo/mustache/logger"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 )
 
@@ -35,10 +37,22 @@ func InitiateProject(projectName string) {
 
 	// Create database and collections if it doesn't exist
 	if !dbExists {
-		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[0])
-		if err != nil {
-			log.Fatal(err)
-		}
+
+		func() {
+			err := client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[0])
+			if err != nil {
+				log.Fatal(err)
+			}
+			collection := client.Database(dbName).Collection(configProject.Collections[0])
+			indexModel := mongo.IndexModel{
+				Keys:    bson.M{"subdomain": 1},
+				Options: options.Index().SetUnique(true),
+			}
+			_, err = collection.Indexes().CreateOne(context.Background(), indexModel)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[1])
 		if err != nil {
