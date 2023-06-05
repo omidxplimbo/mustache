@@ -101,7 +101,7 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 			logger.Fetal(err.Error())
 		}
 
-		fmt.Println(jsonResult)
+		fmt.Println(string(jsonResult))
 	}
 
 	if err := cursor.Err(); err != nil {
