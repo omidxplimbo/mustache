@@ -3,7 +3,7 @@ description: subdomain enumeration passive and active
 command:
   - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent -config $configPath$/subfinder.yaml
   - findomain -t $domain$ | tee $projectName$-findomain.txt
-  - cat $projectName$-subfinder.txt $projectName$-findomain.txt | sort -u > $projectName$-final.txt
+  - cat $projectName$-subfinder.txt $projectName$-findomain.txt | unfurl format %d | sort -u > $projectName$-final.txt
   - rm $projectName$-subfinder.txt $projectName$-findomain.txt
   - rm $projectName$-final.txt
 
