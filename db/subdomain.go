@@ -249,3 +249,42 @@ func (s Subdomain) LatestLivesSubdomain(projectName string, count int) {
 		logger.Fetal(err.Error())
 	}
 }
+
+func (s Subdomain) GetSub(projectName string, target string) {
+	// Get project config
+	configProject := config.ProjectConfig()
+
+	// Connect to database
+	client, _ := ConnectToDatabase()
+
+	// Check if database exists
+	dbName := configProject.DbPrefix + projectName
+
+	// Insert the array of data into the MongoDB collection
+	collection := client.Database(dbName).Collection(configProject.Collections[0])
+
+	filter := bson.M{"subdomain": target}
+
+	// Retrieve all documents from the collection
+	cursor, _ := collection.Find(context.Background(), filter)
+
+	defer cursor.Close(context.Background())
+
+	logger.Info(fmt.Sprintf("Get information of %s subdomains for %s project: ", target, projectName))
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			logger.Fetal(err.Error())
+		}
+		prettyJSON, err := json.MarshalIndent(result, "", "    ")
+		if err != nil {
+			logger.Fetal(err.Error())
+		}
+		color.Yellow(string(prettyJSON))
+	}
+
+	if err := cursor.Err(); err != nil {
+		logger.Fetal(err.Error())
+	}
+}

@@ -55,3 +55,18 @@ func (w Watch) LatestLivesSubdomain(projectName string, count int) {
 	// send request to flow if exists
 	watch.LatestLivesSubdomain(projectName, count)
 }
+
+func (w Watch) GetSub(projectName string, target string) {
+	if projectName == "" {
+		logger.Fetal("Project flag is required. Please use -h for help.")
+		os.Exit(0)
+	}
+
+	if target == "" {
+		logger.Fetal("Target flag is required. Please use -h for help.")
+		os.Exit(0)
+	}
+
+	// send request to flow if exists
+	watch.GetSub(projectName, target)
+}

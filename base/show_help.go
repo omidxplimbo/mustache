@@ -53,6 +53,7 @@ func ShowHelp() {
 		{"latest-lives", "Get latest added live subdomain of project (default 10 record)", "Watch"},
 		{"latest-urls", "Get latest added urls of project (default 10 record)", "Watch"},
 		{"latest-domain", "Get latest added domain of project (default 10 record)", "Watch"},
+		{"get-sub", "Get Subdomain information of project", "Watch"},
 	}
 
 	// Define the table format

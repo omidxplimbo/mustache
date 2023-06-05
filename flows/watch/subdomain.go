@@ -25,3 +25,9 @@ func LatestLivesSubdomain(projectName string, count int) {
 	subdomain := db.Subdomain{}
 	subdomain.LatestLivesSubdomain(projectName, count)
 }
+
+func GetSub(projectName string, target string) {
+
+	subdomain := db.Subdomain{}
+	subdomain.GetSub(projectName, target)
+}
