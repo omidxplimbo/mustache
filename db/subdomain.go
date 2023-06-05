@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/logger"
@@ -95,7 +96,12 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
-		fmt.Println(result)
+		jsonResult, err := json.Marshal(result)
+		if err != nil {
+			logger.Fetal(err.Error())
+		}
+
+		fmt.Println(jsonResult)
 	}
 
 	if err := cursor.Err(); err != nil {
