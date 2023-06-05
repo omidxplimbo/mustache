@@ -266,29 +266,33 @@ func (s Subdomain) GetSub(projectName string, target string) {
 	filter := bson.M{"subdomain": target}
 
 	// Retrieve all documents from the collection
-	cursor, _ := collection.Find(context.Background(), filter)
-
+	cursor, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		logger.Fetal(err.Error())
+	}
 	defer cursor.Close(context.Background())
 
+	// Check if cursor has any documents
 	if !cursor.Next(context.Background()) {
 		logger.Warning("There isn't any subdomain with this name for project")
-	}
-
-	logger.Info(fmt.Sprintf("Get information of %s subdomains for %s project: ", target, projectName))
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			logger.Fetal(err.Error())
+	} else {
+		logger.Info(fmt.Sprintf("Get information of %s subdomains for %s project: ", target, projectName))
+		for cursor.Next(context.Background()) {
+			var result bson.M
+			err := cursor.Decode(&result)
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			prettyJSON, err := json.MarshalIndent(result, "", "    ")
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			color.Yellow(string(prettyJSON))
 		}
-		prettyJSON, err := json.MarshalIndent(result, "", "    ")
-		if err != nil {
-			logger.Fetal(err.Error())
-		}
-		color.Yellow(string(prettyJSON))
 	}
 
 	if err := cursor.Err(); err != nil {
 		logger.Fetal(err.Error())
 	}
+
 }
