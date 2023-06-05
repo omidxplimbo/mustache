@@ -20,6 +20,7 @@ func HandleSwitch() {
 	module := flag.String("module", "", "Set module for run")
 	projectName := flag.String("project", "", "Create project in database")
 	collection := flag.String("collection", "all", "Collection project in database")
+	count := flag.Int("count", 10, "Count of result")
 	flag.Parse()
 
 	// Show help function
@@ -36,7 +37,7 @@ func HandleSwitch() {
 	case "recon":
 		reconHandle(*flow, *projectName, *target)
 	case "watch":
-		watchHandle(*flow, *projectName)
+		watchHandle(*flow, *projectName, *count)
 	default:
 		fmt.Println("Wrong Selected Module. Please use -h for get help")
 	}
@@ -103,12 +104,14 @@ func projectHandle(flow string, projectName string, collection string, path stri
 
 }
 
-func watchHandle(flow string, projectName string) {
+func watchHandle(flow string, projectName string, count int) {
 
 	watch := watchModule.Watch{}
 	switch flow {
 	case "subdomain":
 		watch.Subdomain(projectName)
+	case "latest-sub":
+		watch.LatestSubdomain(projectName, count)
 	default:
 		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")
 		os.Exit(0)

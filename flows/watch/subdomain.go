@@ -7,3 +7,9 @@ func GetAllSubdomain(projectName string) {
 	subdomain := db.Subdomain{}
 	subdomain.GetAllSubdomain(projectName)
 }
+
+func LatestSubdomain(projectName string, count int) {
+
+	subdomain := db.Subdomain{}
+	subdomain.LatestSubdomain(projectName, count)
+}
