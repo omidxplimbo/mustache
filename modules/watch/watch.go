@@ -31,3 +31,13 @@ func (w Watch) LatestSubdomain(projectName string, count int) {
 	// send request to flow if exists
 	watch.LatestSubdomain(projectName, count)
 }
+
+func (w Watch) LivesSubdomain(projectName string) {
+	if projectName == "" {
+		logger.Fetal("Project flag is required. Please use -h for help.")
+		os.Exit(0)
+	}
+
+	// send request to flow if exists
+	watch.LivesSubdomain(projectName)
+}
