@@ -127,7 +127,7 @@ func (s Subdomain) LatestSubdomain(projectName string, count int) {
 
 	optionsGet := options.Find()
 	optionsGet.SetSort(bson.D{{"_id", -1}})
-	optionsGet.SetLimit(10)
+	optionsGet.SetLimit(int64(count))
 
 	// Retrieve all documents from the collection
 	cursor, err := collection.Find(context.Background(), bson.D{}, optionsGet)
@@ -139,7 +139,7 @@ func (s Subdomain) LatestSubdomain(projectName string, count int) {
 
 	// Iterate through the cursor and print the documents
 	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), bson.M{})
-	logger.Info(fmt.Sprintf("%d Latest subdomains for %s project:", count, projectName))
+	logger.Info(fmt.Sprintf("%d Latest subdomains for %s project", count, projectName))
 	logger.Info(fmt.Sprintf("Count of subdomain for %s project is: %d", projectName, countItem))
 	for cursor.Next(context.Background()) {
 		var result bson.M
