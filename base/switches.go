@@ -5,6 +5,7 @@ import (
 	"fmt"
 	projectModule "github.com/omidxplimbo/mustache/modules/project"
 	reconModule "github.com/omidxplimbo/mustache/modules/recon"
+	watchModule "github.com/omidxplimbo/mustache/modules/watch"
 	"os"
 )
 
@@ -34,6 +35,8 @@ func HandleSwitch() {
 		continuesHandle(*flow, *projectName, *dbName, *pathFile, *target)
 	case "recon":
 		reconHandle(*flow, *projectName, *target)
+	case "watch":
+		watchHandle(*flow, *projectName)
 	default:
 		fmt.Println("Wrong Selected Module. Please use -h for get help")
 	}
@@ -93,6 +96,19 @@ func projectHandle(flow string, projectName string, collection string, path stri
 		project.Report(projectName)
 	case "remove":
 		project.Remove(projectName)
+	default:
+		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")
+		os.Exit(0)
+	}
+
+}
+
+func watchHandle(flow string, projectName string) {
+
+	watch := watchModule.Watch{}
+	switch flow {
+	case "subdomain":
+		watch.Subdomain(projectName)
 	default:
 		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")
 		os.Exit(0)
