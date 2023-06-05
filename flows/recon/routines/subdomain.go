@@ -63,8 +63,6 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 
 		// Replace variables in the command
 		command = replaceVariables(command, projectName, domain, configPath)
-		fmt.Println(command)
-		continue
 
 		// Run the command
 		logger.Info(fmt.Sprintf("Running Process: " + command))
