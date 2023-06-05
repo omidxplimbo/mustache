@@ -57,13 +57,11 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 
 	opts := options.BulkWrite().SetOrdered(false)
 
-	result, err := collection.BulkWrite(context.Background(), updates, opts)
+	_, err := collection.BulkWrite(context.Background(), updates, opts)
 	if err != nil {
 		logger.Fetal(err.Error())
 	}
 
-	logger.Info(fmt.Sprintf("Matched %v documents, updated %v documents\n", result.MatchedCount, result.ModifiedCount))
-	logger.Info(fmt.Sprintf("Inserted %v documents\n", result.UpsertedCount))
 	logger.Info(fmt.Sprintf("Subdomains added to %s project at: %s", projectName, time.Now().Format(configProject.TimeShow)))
 
 }
