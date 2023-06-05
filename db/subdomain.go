@@ -96,12 +96,11 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
-		jsonResult, err := json.Marshal(result)
+		prettyJSON, err := json.MarshalIndent(result, "", "    ")
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
-
-		fmt.Println(string(jsonResult))
+		fmt.Println(string(prettyJSON))
 	}
 
 	if err := cursor.Err(); err != nil {
