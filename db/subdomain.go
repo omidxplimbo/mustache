@@ -229,9 +229,9 @@ func (s Subdomain) LatestLivesSubdomain(projectName string, count int) {
 	defer cursor.Close(context.Background())
 
 	// Iterate through the cursor and print the documents
-	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), bson.M{})
-	logger.Info(fmt.Sprintf("%d Latest subdomains for %s project", count, projectName))
-	logger.Info(fmt.Sprintf("Count of subdomain for %s project is: %d", projectName, countItem))
+	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), filter)
+	logger.Info(fmt.Sprintf("%d Latest live subdomains for %s project", count, projectName))
+	logger.Info(fmt.Sprintf("Count of latest live subdomains for %s project is: %d", projectName, countItem))
 	for cursor.Next(context.Background()) {
 		var result bson.M
 		err := cursor.Decode(&result)
