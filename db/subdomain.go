@@ -101,6 +101,7 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
+		logger.Info(fmt.Sprintf("Subdomains for %s project:", projectName))
 		color.Cyan(string(prettyJSON))
 	}
 
