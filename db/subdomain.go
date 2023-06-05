@@ -270,9 +270,10 @@ func (s Subdomain) GetSub(projectName string, target string) {
 
 	defer cursor.Close(context.Background())
 
-	if cursor.ID() == 0 {
+	if !cursor.Next(context.Background()) {
 		logger.Warning("There isn't any subdomain with this name for project")
 	}
+
 	logger.Info(fmt.Sprintf("Get information of %s subdomains for %s project: ", target, projectName))
 	for cursor.Next(context.Background()) {
 		var result bson.M
