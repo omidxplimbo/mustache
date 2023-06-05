@@ -201,3 +201,51 @@ func (s Subdomain) LivesSubdomain(projectName string) {
 		logger.Fetal(err.Error())
 	}
 }
+
+func (s Subdomain) LatestLivesSubdomain(projectName string, count int) {
+	// Get project config
+	configProject := config.ProjectConfig()
+
+	// Connect to database
+	client, _ := ConnectToDatabase()
+
+	// Check if database exists
+	dbName := configProject.DbPrefix + projectName
+
+	// Insert the array of data into the MongoDB collection
+	collection := client.Database(dbName).Collection(configProject.Collections[0])
+
+	optionsGet := options.Find()
+	optionsGet.SetSort(bson.D{{"_id", -1}})
+	optionsGet.SetLimit(int64(count))
+	filter := bson.M{"http": true}
+
+	// Retrieve all documents from the collection
+	cursor, err := collection.Find(context.Background(), filter, optionsGet)
+	if err != nil {
+		// Handle error
+	}
+
+	defer cursor.Close(context.Background())
+
+	// Iterate through the cursor and print the documents
+	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), bson.M{})
+	logger.Info(fmt.Sprintf("%d Latest subdomains for %s project", count, projectName))
+	logger.Info(fmt.Sprintf("Count of subdomain for %s project is: %d", projectName, countItem))
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			logger.Fetal(err.Error())
+		}
+		prettyJSON, err := json.MarshalIndent(result, "", "    ")
+		if err != nil {
+			logger.Fetal(err.Error())
+		}
+		color.Yellow(string(prettyJSON))
+	}
+
+	if err := cursor.Err(); err != nil {
+		logger.Fetal(err.Error())
+	}
+}
