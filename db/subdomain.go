@@ -91,7 +91,9 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 	defer cursor.Close(context.Background())
 
 	// Iterate through the cursor and print the documents
+	count, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), bson.M{})
 	logger.Info(fmt.Sprintf("Subdomains for %s project:", projectName))
+	logger.Info(fmt.Sprintf("Count of subdomain for %s project is: %d", projectName, count))
 	for cursor.Next(context.Background()) {
 		var result bson.M
 		err := cursor.Decode(&result)
@@ -102,7 +104,7 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
-		color.Cyan(string(prettyJSON))
+		color.YellowString(string(prettyJSON))
 	}
 
 	if err := cursor.Err(); err != nil {
