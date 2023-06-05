@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/logger"
 	"go.mongodb.org/mongo-driver/bson"
@@ -100,7 +101,7 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
-		fmt.Println(string(prettyJSON))
+		color.Cyan(string(prettyJSON))
 	}
 
 	if err := cursor.Err(); err != nil {
