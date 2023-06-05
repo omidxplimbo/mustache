@@ -91,6 +91,7 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 	defer cursor.Close(context.Background())
 
 	// Iterate through the cursor and print the documents
+	logger.Info(fmt.Sprintf("Subdomains for %s project:", projectName))
 	for cursor.Next(context.Background()) {
 		var result bson.M
 		err := cursor.Decode(&result)
@@ -101,7 +102,6 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
-		logger.Info(fmt.Sprintf("Subdomains for %s project:", projectName))
 		color.Cyan(string(prettyJSON))
 	}
 
