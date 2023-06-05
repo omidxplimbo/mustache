@@ -65,3 +65,40 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 	logger.Info(fmt.Sprintf("Subdomains added to %s project at: %s", projectName, time.Now().Format(configProject.TimeShow)))
 
 }
+
+func (s Subdomain) GetAllSubdomain(projectName string) {
+	// Get project config
+	configProject := config.ProjectConfig()
+
+	// Connect to database
+	client, _ := ConnectToDatabase()
+
+	// Check if database exists
+	dbName := configProject.DbPrefix + projectName
+
+	// Insert the array of data into the MongoDB collection
+	collection := client.Database(dbName).Collection(configProject.Collections[0])
+
+	// Access the collection
+	// Retrieve all documents from the collection
+	cursor, err := collection.Find(context.Background(), bson.M{})
+	if err != nil {
+		// Handle error
+	}
+
+	defer cursor.Close(context.Background())
+
+	// Iterate through the cursor and print the documents
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			logger.Fetal(err.Error())
+		}
+		fmt.Println(result)
+	}
+
+	if err := cursor.Err(); err != nil {
+		logger.Fetal(err.Error())
+	}
+}
