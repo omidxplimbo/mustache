@@ -181,9 +181,9 @@ func (s Subdomain) LivesSubdomain(projectName string) {
 	defer cursor.Close(context.Background())
 
 	// Iterate through the cursor and print the documents
-	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), bson.M{})
+	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), filter)
 	logger.Info(fmt.Sprintf("All Live Subdomain for %s", projectName))
-	logger.Info(fmt.Sprintf("Count of subdomain for %s project is: %d", projectName, countItem))
+	logger.Info(fmt.Sprintf("Count of live subdomains for %s project is: %d", projectName, countItem))
 	for cursor.Next(context.Background()) {
 		var result bson.M
 		err := cursor.Decode(&result)
