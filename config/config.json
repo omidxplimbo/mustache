@@ -5,9 +5,9 @@
   "mongoUrl": "mongodb://localhost:27017",
   "timeShow": "2006-01-02 15:04:05",
   "addresses": {
-    "wordLists": "{{home}}/mustache/wordLists",
+    "wordList": "{{home}}/mustache/wordLists",
     "resolvers": "{{home}}/mustache/resolvers",
-    "configs": "{{home}}/mustache/configs",
+    "configs": "{{projectPath}}/config/binary-configs",
     "binaries": "{{home}}/mustache/binaries",
     "logs": "{{home}}/mustache/logs"
   },

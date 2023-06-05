@@ -8,11 +8,18 @@ import (
 )
 
 type Config struct {
-	AppName     string   `json:"appName"`
-	DbPrefix    string   `json:"dbPrefix"`
-	DbTimeout   int      `json:"dbTimeout"`
-	MongoUrl    string   `json:"mongoUrl"`
-	TimeShow    string   `json:"timeShow"`
+	AppName   string `json:"appName"`
+	DbPrefix  string `json:"dbPrefix"`
+	DbTimeout int    `json:"dbTimeout"`
+	MongoUrl  string `json:"mongoUrl"`
+	TimeShow  string `json:"timeShow"`
+	Addresses struct {
+		Wordlist  string `json:"wordlist"`
+		Resolvers string `json:"resolvers"`
+		Configs   string `json:"configs"`
+		Binaries  string `json:"binaries"`
+		logs      string `json:"logs"`
+	} `json:"addresses"`
 	Collections []string `json:"collections"`
 	PublicError struct {
 		ErrorConnectDB   string `json:"errorConnectDb"`

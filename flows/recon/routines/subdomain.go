@@ -7,6 +7,7 @@ import (
 	"github.com/omidxplimbo/mustache/logger"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -41,6 +42,11 @@ func SubDomain(projectName string, target string) {
 // Execute commands in the YAML data
 func runYaml(data map[string]interface{}, projectName string, domain string) {
 
+	// Set address for tools config
+	configPath := config.ProjectConfig().Addresses.Configs
+	dir, _ := os.Getwd()
+	configPath = strings.ReplaceAll(configPath, "{{projectPath}}", dir)
+
 	commands, ok := data["command"].([]interface{})
 	if !ok {
 		return
@@ -56,7 +62,9 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 		}
 
 		// Replace variables in the command
-		command = replaceVariables(command, projectName, domain)
+		command = replaceVariables(command, projectName, domain, configPath)
+		fmt.Println(command)
+		continue
 
 		// Run the command
 		logger.Info(fmt.Sprintf("Running Process: " + command))
@@ -94,9 +102,10 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 }
 
 // Replace variables in the command
-func replaceVariables(command string, projectName string, domain string) string {
+func replaceVariables(command string, projectName string, domain string, configPath string) string {
 	command = strings.ReplaceAll(command, "$domain$", domain)
 	command = strings.ReplaceAll(command, "$projectName$", projectName)
+	command = strings.ReplaceAll(command, "$configPath$", configPath)
 	return command
 }
 
