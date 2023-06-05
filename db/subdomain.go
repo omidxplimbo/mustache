@@ -104,7 +104,7 @@ func (s Subdomain) GetAllSubdomain(projectName string) {
 		if err != nil {
 			logger.Fetal(err.Error())
 		}
-		color.YellowString(string(prettyJSON))
+		color.Yellow(string(prettyJSON))
 	}
 
 	if err := cursor.Err(); err != nil {
