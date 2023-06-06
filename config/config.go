@@ -18,13 +18,16 @@ type Config struct {
 		Resolvers string `json:"resolvers"`
 		Configs   string `json:"configs"`
 		Binaries  string `json:"binaries"`
-		logs      string `json:"logs"`
+		Logs      string `json:"logs"`
 	} `json:"addresses"`
 	Collections []string `json:"collections"`
 	PublicError struct {
 		ErrorConnectDB   string `json:"errorConnectDb"`
 		SubdomainAddToDB string `json:"subdomainAddToDatabase"`
 	} `json:"publicErrors"`
+	Providers struct {
+		ChaosApi string `json:"chaosApi"`
+	} `json:"providers"`
 }
 
 func ProjectConfig() Config {

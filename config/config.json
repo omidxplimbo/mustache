@@ -24,5 +24,9 @@
   "publicErrors": {
     "errorConnectDb": "Connect to database with error. See logs",
     "subdomainAddToDatabase": "Subdomain add to database"
+  },
+  "providers": {
+    "chaosApi": "FgD0j31YWBOenZdMkeysfuorGYP1oRUQ6waMDH1XcBYR0Pap3q1CFlei7k19tYGW",
+    "crtSh": "Must bash handle"
   }
 }

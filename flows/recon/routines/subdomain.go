@@ -44,6 +44,7 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 
 	// Set address for tools config
 	configPath := config.ProjectConfig().Addresses.Configs
+	chaosApi := config.ProjectConfig().Providers.ChaosApi
 	dir, _ := os.Getwd()
 	configPath = strings.ReplaceAll(configPath, "{{projectPath}}", dir)
 
@@ -62,7 +63,7 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 		}
 
 		// Replace variables in the command
-		command = replaceVariables(command, projectName, domain, configPath)
+		command = replaceVariables(command, projectName, domain, configPath, chaosApi)
 
 		// Run the command
 		logger.Info(fmt.Sprintf("Running Process: " + command))
@@ -100,10 +101,11 @@ func runYaml(data map[string]interface{}, projectName string, domain string) {
 }
 
 // Replace variables in the command
-func replaceVariables(command string, projectName string, domain string, configPath string) string {
+func replaceVariables(command string, projectName string, domain string, configPath string, chaosApi string) string {
 	command = strings.ReplaceAll(command, "$domain$", domain)
 	command = strings.ReplaceAll(command, "$projectName$", projectName)
 	command = strings.ReplaceAll(command, "$configPath$", configPath)
+	command = strings.ReplaceAll(command, "$chaosApi$", chaosApi)
 	return command
 }
 
