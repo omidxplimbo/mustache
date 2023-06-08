@@ -9,13 +9,6 @@ import (
 
 type Recon struct{}
 
-type CheckAnySwitch struct {
-	WC bool
-	PR bool
-	PP bool
-	PN bool
-}
-
 func (r Recon) General(projectName string, target string, wc bool, pr bool, pp bool, pn bool) {
 	if projectName == "" {
 		log.Fatal("Project flag is required. Please use -h for help.")
@@ -33,12 +26,6 @@ func (r Recon) General(projectName string, target string, wc bool, pr bool, pp b
 		pn = true
 	}
 
-	anySwitch := CheckAnySwitch{
-		WC: wc,
-		PR: pr,
-		PP: pp,
-		PN: pn,
-	}
 	// send request to flow if exists
-	recon.General(projectName, target, anySwitch)
+	recon.General(projectName, target, wc, pr, pp, pn)
 }

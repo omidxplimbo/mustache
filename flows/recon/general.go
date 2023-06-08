@@ -5,13 +5,12 @@ import (
 	"github.com/omidxplimbo/mustache/config"
 	recon "github.com/omidxplimbo/mustache/flows/recon/routines"
 	"github.com/omidxplimbo/mustache/logger"
-	reconModule "github.com/omidxplimbo/mustache/modules/recon"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"time"
 )
 
-func General(projectName string, target string, anySwitch reconModule.CheckAnySwitch) {
+func General(projectName string, target string, wc bool, pr bool, pp bool, pn bool) {
 
 	projectConfig := config.ProjectConfig()
 	logger.Info(fmt.Sprintf("Running general flow at: %s", time.Now().Format(projectConfig.TimeShow)))
@@ -34,7 +33,7 @@ func General(projectName string, target string, anySwitch reconModule.CheckAnySw
 	for _, routine := range data["routine"].([]interface{}) {
 		switch routine {
 		case "subdomain":
-			recon.SubDomain(projectName, target, anySwitch)
+			recon.SubDomain(projectName, target, pr, pn, pp, wc)
 		default:
 			logger.Warning(fmt.Sprintf("There isn't any routins in the general flow"))
 		}

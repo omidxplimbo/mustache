@@ -6,7 +6,6 @@ import (
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/db"
 	"github.com/omidxplimbo/mustache/logger"
-	reconModule "github.com/omidxplimbo/mustache/modules/recon"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
@@ -29,7 +28,14 @@ type ResolvesSubdomain struct {
 	Ip        string
 }
 
-func SubDomain(projectName string, target string, anySwitch reconModule.CheckAnySwitch) {
+type CheckAnySwitch struct {
+	WC bool
+	PR bool
+	PP bool
+	PN bool
+}
+
+func SubDomain(projectName string, target string, pr bool, pn bool, pp bool, wc bool) {
 	projectConfig := config.ProjectConfig()
 
 	yamlFile, err := ioutil.ReadFile("config/flows/subdomain.yaml")
@@ -47,12 +53,19 @@ func SubDomain(projectName string, target string, anySwitch reconModule.CheckAny
 
 	// set switch
 
+	anySwitch := CheckAnySwitch{
+		WC: wc,
+		PR: pr,
+		PP: pp,
+		PN: pn,
+	}
+
 	runYaml(data, projectName, target, anySwitch)
 
 	logger.Info(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
 }
 
-func runYaml(data map[string]interface{}, projectName string, domain string, anySwitch reconModule.CheckAnySwitch) {
+func runYaml(data map[string]interface{}, projectName string, domain string, anySwitch CheckAnySwitch) {
 
 	configPath := config.ProjectConfig().Addresses.Configs
 	chaosApi := config.ProjectConfig().Providers.ChaosApi
@@ -88,7 +101,7 @@ func runYaml(data map[string]interface{}, projectName string, domain string, any
 	}
 }
 
-func executeCommands(data map[string]interface{}, params CommandParams, anySwitch reconModule.CheckAnySwitch, projectName string) ([]db.Subdomain, []db.Subdomain, error) {
+func executeCommands(data map[string]interface{}, params CommandParams, anySwitch CheckAnySwitch, projectName string) ([]db.Subdomain, []db.Subdomain, error) {
 
 	// Set Commands and init data
 	var subdomains []db.Subdomain
