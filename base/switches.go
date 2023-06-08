@@ -21,6 +21,11 @@ func HandleSwitch() {
 	projectName := flag.String("project", "", "Create project in database")
 	collection := flag.String("collection", "all", "Collection project in database")
 	count := flag.Int("count", 10, "Count of result")
+	pn := flag.Bool("pn", false, "Dont permutation subdomain")
+	pr := flag.Bool("pr", false, "Permutation just for resolved subdomain")
+	pp := flag.Bool("pp", false, "Permutation for all passive founded subdomain")
+	wildCard := flag.Bool("wc", false, "Wildcard domain")
+
 	flag.Parse()
 
 	// Show help function
@@ -35,7 +40,7 @@ func HandleSwitch() {
 	case "continues":
 		continuesHandle(*flow, *projectName, *dbName, *pathFile, *target)
 	case "recon":
-		reconHandle(*flow, *projectName, *target)
+		reconHandle(*flow, *projectName, *target, *pr, *pn, *pp, *wildCard)
 	case "watch":
 		watchHandle(*flow, *projectName, *count, *target)
 	default:
@@ -44,12 +49,12 @@ func HandleSwitch() {
 
 }
 
-func reconHandle(flow string, projectName string, target string) {
+func reconHandle(flow string, projectName string, target string, pr bool, pn bool, pp bool, wc bool) {
 
 	recon := reconModule.Recon{}
 	switch flow {
 	case "general":
-		recon.General(projectName, target)
+		recon.General(projectName, target, wc, pr, pp, pn)
 	default:
 		fmt.Println("Recon Flow Very Soon")
 	}
