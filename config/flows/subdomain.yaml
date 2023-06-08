@@ -4,16 +4,12 @@ command:
   - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent -config $configPath$/subfinder.yaml
   - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
   - findomain -t $domain$ | tee $projectName$-findomain.txt
-  - amass enum -active -d $domain$ -o $projectName$-amass-active.txt -silent
   - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
   - crtsh $domain$ | tee $projectName$-crt.txt
   - secrd $domain$ | tee $projectName$-secrd.txt
-
-  - cat $projectName$-subfinder.txt $projectName$-findomain.txt $projectName$-amass.txt $projectName$-amass-active.txt
-    $projectName$-chaos.txt $projectName$-crt.txt $projectName$-secrd.txt
-    | unfurl format \%d | sort -u > $projectName$-final.txt
-  - rm $projectName$-subfinder.txt $projectName$-findomain.txt $projectName$-amass.txt $projectName$-amass-active.txt
-    $projectName$-chaos.txt $projectName$-crt.txt $projectName$-secrd.txt
-  - rm $projectName$-final.txt
+  - rapidns $domain$ | tee $projectName$-rapidns.txt
+  - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
+  - cat $projectName$-* | unfurl format %d | sort -u > $projectName$-final.txt
+  - rm $projectName$-*.txt
 
 

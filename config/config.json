@@ -4,6 +4,7 @@
   "dbTimeout": 10000,
   "mongoUrl": "mongodb://localhost:27017",
   "timeShow": "2006-01-02 15:04:05",
+  "tread": 10,
   "addresses": {
     "wordList": "{{home}}/mustache/wordLists",
     "resolvers": "{{home}}/mustache/resolvers",
