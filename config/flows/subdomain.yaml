@@ -5,20 +5,20 @@ Commands-passive:
   - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
   - findomain -t $domain$ | tee $projectName$-findomain.txt
   - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
-  - crtsh $domain$ | tee $projectName$-crt.txt
-  - secrd $domain$ | tee $projectName$-secrd.txt
-  - rapidns $domain$ | tee $projectName$-rapidns.txt
+  - crtsh $domain$ >  $projectName$-crt.txt
+  - secrd $domain$ >  $projectName$-secrd.txt
+  - rapidns $domain$ >  $projectName$-rapidns.txt
   - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
   - cat $projectName$-* | sort -u > $projectName$-passive.txt
 
 Commands-wc:
   - shuffledns -l $projectName$-passive.txt -o $projectName$-resolves.txt
 Commands-resolver:
-  - dnsx -l passive.txt -o $projectName$-resolves.txt
+  - dnsx -l $projectName$-passive.txt -o $projectName$-resolves.txt
 
 Commands-bruteForce:
   - puredns bruteforce $wordlist$/wordlist.txt $domain$ --resolvers $resolver$/resolver.txt > $projectName$-puredns.txt
-  - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u |tee $projectName$-full-resolves.txt
+  - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u > $projectName$-full-resolves.txt
 
 Commands-pr:
   - cat $projectName$-full-resolves.txt | dnsgen - | dnsx -silent | sort -u > $projectName$-final.txt
