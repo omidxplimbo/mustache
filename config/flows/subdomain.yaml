@@ -18,7 +18,7 @@ Commands-resolver:
   - dnsx -l passive.txt -o $projectName$-resolves.txt
 
 Commands-bruteForce:
-  - puredns bruteforce $wordlist$ $domain$ --resolvers $resolver$ -o $projectName$-puredns.txt
+  - puredns bruteforce $wordlist$/wordlist.txt $domain$ --resolvers $resolver$/resolver.txt -o $projectName$-puredns.txt
   - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u |tee $projectName$-full-resolves.txt
 
 Commands-pr:
