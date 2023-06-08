@@ -40,7 +40,7 @@ func HandleSwitch() {
 	case "continues":
 		continuesHandle(*flow, *projectName, *dbName, *pathFile, *target)
 	case "recon":
-		reconHandle(*flow, *projectName, *target, *pr, *pn, *pp, *wildCard)
+		reconHandle(*flow, *projectName, *target, pr, pn, pp, wildCard)
 	case "watch":
 		watchHandle(*flow, *projectName, *count, *target)
 	default:
@@ -49,7 +49,7 @@ func HandleSwitch() {
 
 }
 
-func reconHandle(flow string, projectName string, target string, pr bool, pn bool, pp bool, wc bool) {
+func reconHandle(flow string, projectName string, target string, pr *bool, pn *bool, pp *bool, wc *bool) {
 
 	recon := reconModule.Recon{}
 	switch flow {
