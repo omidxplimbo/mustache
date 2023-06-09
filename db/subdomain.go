@@ -294,7 +294,7 @@ func (s Subdomain) GetSub(projectName string, target string) {
 
 }
 
-func (s Subdomain) ResolvedSubdomain(projectName string) {
+func (s Subdomain) ResolvedSubdomain(projectName string, justCount *bool) {
 	// Get project config
 	configProject := config.ProjectConfig()
 
@@ -320,20 +320,23 @@ func (s Subdomain) ResolvedSubdomain(projectName string) {
 	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), filter)
 	logger.Info(fmt.Sprintf("All Resolved Subdomain for %s", projectName))
 	logger.Info(fmt.Sprintf("Count of resolved subdomains for %s project is: %d", projectName, countItem))
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
+	if !*justCount {
+		for cursor.Next(context.Background()) {
+			var result bson.M
+			err := cursor.Decode(&result)
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			prettyJSON, err := json.MarshalIndent(result, "", "    ")
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			color.Yellow(string(prettyJSON))
+		}
+
+		if err := cursor.Err(); err != nil {
 			logger.Fetal(err.Error())
 		}
-		prettyJSON, err := json.MarshalIndent(result, "", "    ")
-		if err != nil {
-			logger.Fetal(err.Error())
-		}
-		color.Yellow(string(prettyJSON))
 	}
 
-	if err := cursor.Err(); err != nil {
-		logger.Fetal(err.Error())
-	}
 }

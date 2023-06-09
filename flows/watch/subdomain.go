@@ -32,8 +32,8 @@ func GetSub(projectName string, target string) {
 	subdomain.GetSub(projectName, target)
 }
 
-func ResolvedSubdomain(projectName string) {
+func ResolvedSubdomain(projectName string, justCount *bool) {
 
 	subdomain := db.Subdomain{}
-	subdomain.ResolvedSubdomain(projectName)
+	subdomain.ResolvedSubdomain(projectName, justCount)
 }

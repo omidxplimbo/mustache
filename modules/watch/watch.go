@@ -71,12 +71,12 @@ func (w Watch) GetSub(projectName string, target string) {
 	watch.GetSub(projectName, target)
 }
 
-func (w Watch) Resolved(projectName string) {
+func (w Watch) Resolved(projectName string, justCount *bool) {
 	if projectName == "" {
 		logger.Fetal("Project flag is required. Please use -h for help.")
 		os.Exit(0)
 	}
 
 	// send request to flow if exists
-	watch.ResolvedSubdomain(projectName)
+	watch.ResolvedSubdomain(projectName, justCount)
 }

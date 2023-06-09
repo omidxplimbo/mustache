@@ -25,6 +25,7 @@ func HandleSwitch() {
 	pr := flag.Bool("pr", false, "Permutation just for resolved subdomain")
 	pp := flag.Bool("pp", false, "Permutation for all passive founded subdomain")
 	wildCard := flag.Bool("wc", false, "Wildcard domain")
+	jc := flag.Bool("jc", false, "Get just count of items")
 
 	flag.Parse()
 
@@ -42,7 +43,7 @@ func HandleSwitch() {
 	case "recon":
 		reconHandle(*flow, *projectName, *target, pr, pn, pp, wildCard)
 	case "watch":
-		watchHandle(*flow, *projectName, *count, *target)
+		watchHandle(*flow, *projectName, *count, *target, jc)
 	default:
 		fmt.Println("Wrong Selected Module. Please use -h for get help")
 	}
@@ -109,7 +110,7 @@ func projectHandle(flow string, projectName string, collection string, path stri
 
 }
 
-func watchHandle(flow string, projectName string, count int, target string) {
+func watchHandle(flow string, projectName string, count int, target string, justCount *bool) {
 
 	watch := watchModule.Watch{}
 	switch flow {
@@ -124,7 +125,7 @@ func watchHandle(flow string, projectName string, count int, target string) {
 	case "get-sub":
 		watch.GetSub(projectName, target)
 	case "resolved":
-		watch.Resolved(projectName)
+		watch.Resolved(projectName, justCount)
 
 	default:
 		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")
