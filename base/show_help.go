@@ -9,15 +9,51 @@ import (
 func ShowHelp() {
 
 	color.Green("Command Line Usage: ")
-	usage := `	mustache -module continues -flow [flowName] -target [targetName] -path [pathFile] -db [databaseName]
-	mustache -module recon -flow [flowName] -target [targetName] -path [pathFile] -db [databaseName]
-	mustache -module project -flow init -project [projectName] 
-	mustache -module project -flow backup -project [projectName]
-	mustache -module project -flow remove -project [projectName]
-	mustache -module project -flow backup -project [projectName] -collection [collectionName]
+	usagePublic := `	
+	Public flags for all modules:
+		-module [string]	"Select module that you want to run"
+		-flow [string]	"Select flow that you want to run. Each module has some flow"
+		-project [string]	"Project that you want use for modules"
+		-target [string]	"The target that we want run processes"
 	`
+	usageProject := `
+	Flags and usage for project module:
+		-collection [string] "For backup from special collection in backup flow"
+		-path [string]	"Path for save backup file"
 
-	color.Yellow(usage)
+		mustache -module project -flow init -project [projectName] 
+		mustache -module project -flow backup -project [projectName] -path [pathFile]
+		mustache -module project -flow backup -project [projectName] -collection [collectionName] -path [pathFile]
+		mustache -module project -flow remove -project [projectName]
+		mustache -module project -flow report -project [projectName]
+		`
+	usageRecon := `
+	Flags and usage for Recon module:
+		-wc 	"If set use shuffledns for resolve subdomain and if not set use dnsx"
+		-pn	"If set we dont use permutation in subdomains"
+		-pr	"If set we use permutation just in resolved subdomains"
+		-pp	"If set we use permutation for all subdomains. Should use for small target"
+		-target string	"The target that we want run processes"
+
+		mustache -module recon -flow [flowName] -project [projectName] -target [targetName] [-wc] [-pn] [-pr] [-pp]`
+	usageCr := `
+	Flags and usage for Continues recon module:
+		mustache -module continues -flow [flowName] -target [targetName] -path [pathFile] -db [databaseName]`
+	usageWatch := `
+	Flags and usage for Watch module:
+		-jc "For get just count of items in report flow"
+		-count [int] "For get more count of items if exists in report flow"
+
+		mustache -module watch -flow subdomain -project [projectName] [-jc]
+		mustache -module watch -flow domain -project [projectName] [-jc]
+		mustache -module watch -flow tech -project [projectName] [-jc]
+		mustache -module watch -flow latest-lives -project [projectName] [-jc] -count [count]
+`
+	color.HiYellow(usagePublic)
+	color.HiBlue(usageProject)
+	color.HiWhite(usageRecon)
+	color.HiGreen(usageCr)
+	color.HiRed(usageWatch)
 	fmt.Println()
 
 	// Define the table headers and data
