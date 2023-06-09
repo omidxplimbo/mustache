@@ -7,6 +7,7 @@ import (
 	"github.com/omidxplimbo/mustache/db"
 	"github.com/omidxplimbo/mustache/logger"
 	"gopkg.in/yaml.v3"
+	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -135,6 +136,7 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 	filePassiveStatus := fmt.Sprintf("%s-passive.txt", projectName)
 	fileResolveStatus := fmt.Sprintf("%s-final.txt", projectName)
 	fileLivesStatus := fmt.Sprintf("%s-lives.txt", projectName)
+	fileResolveForLiveStatus := fmt.Sprintf("%s-finalLive.txt", projectName)
 	if !fileExists(fileResolveStatus) && !fileExists(filePassiveStatus) && !fileExists(fileLivesStatus) {
 		runCommand(cp, params)
 		if anySwitch.WC {
@@ -151,6 +153,11 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 		}
 		if anySwitch.PN {
 			runCommand(cpn, params)
+		}
+
+		//replace new file for check lives
+		if !fileExists(fileResolveForLiveStatus) {
+			modifyFile(fileResolveStatus, fileResolveForLiveStatus)
 		}
 		runCommand(cl, params)
 	}
@@ -233,8 +240,8 @@ func setLiveHosts(projectName string) []LiveHosts {
 
 		// Ensure there are exactly 2 parts (subdomain and IP)
 		if len(parts) > 1 {
-			subdomain := strings.Trim(parts[0], "https://")
-			subdomain = strings.Trim(subdomain, "http://")
+			subdomain := strings.ReplaceAll(parts[0], "https://", "")
+			subdomain = strings.ReplaceAll(parts[0], "http://", "")
 			CDN := strings.Trim(parts[1], "[]")
 
 			liveHost := LiveHosts{
@@ -373,4 +380,55 @@ func fileExists(filename string) bool {
 
 	// Return true if no error occurred (file exists or other error occurred)
 	return err == nil
+}
+
+func modifyFile(fileResolveStatus string, fileResolveForLiveStatus string) {
+	sourceFile, err := os.Open(fileResolveStatus)
+	if err != nil {
+		logger.Warning(err.Error())
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(fileResolveForLiveStatus)
+	if err != nil {
+		logger.Warning(err.Error())
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		logger.Warning(err.Error())
+	}
+	// Open the text file for reading and writing
+	file, err := os.OpenFile(fileResolveForLiveStatus, os.O_RDWR, 0644)
+	if err != nil {
+		logger.Warning(err.Error())
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	// Create a buffer to store the modified lines
+	var lines []string
+
+	// Loop over each line and remove [ip] if it exists
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, " [") {
+			line = strings.Split(line, " [")[0]
+		}
+		lines = append(lines, line)
+	}
+	// Write the modified lines back to the file
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		logger.Warning(err.Error())
+	}
+	writer := bufio.NewWriter(file)
+	for _, line := range lines {
+		fmt.Fprintln(writer, line)
+	}
+
+	err = writer.Flush()
+	if err != nil {
+		logger.Warning(err.Error())
+	}
 }
