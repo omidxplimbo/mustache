@@ -123,6 +123,8 @@ func watchHandle(flow string, projectName string, count int, target string) {
 		watch.LatestLivesSubdomain(projectName, count)
 	case "get-sub":
 		watch.GetSub(projectName, target)
+	case "resolved":
+		watch.Resolved(projectName)
 
 	default:
 		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")

@@ -31,3 +31,9 @@ func GetSub(projectName string, target string) {
 	subdomain := db.Subdomain{}
 	subdomain.GetSub(projectName, target)
 }
+
+func ResolvedSubdomain(projectName string) {
+
+	subdomain := db.Subdomain{}
+	subdomain.ResolvedSubdomain(projectName)
+}

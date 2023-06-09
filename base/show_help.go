@@ -49,6 +49,7 @@ func ShowHelp() {
 		{"asn", "Get all asn of project", "Watch"},
 		{"urls", "Get all urls of project", "Watch"},
 		{"lives", "Get all lives subdomain of project", "Watch"},
+		{"resolved", "Get all resolved subdomain of project", "Watch"},
 		{"latest-sub", "Get latest added subdomain of project (default 10 record)", "Watch"},
 		{"latest-lives", "Get latest added live subdomain of project (default 10 record)", "Watch"},
 		{"latest-urls", "Get latest added urls of project (default 10 record)", "Watch"},
