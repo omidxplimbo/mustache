@@ -21,13 +21,13 @@ Commands-bruteForce:
   - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u > $projectName$-full-resolves.txt
 
 Commands-pr:
-  - cat $projectName$-full-resolves.txt | dnsgen - | dnsx -silent | sort -u > $projectName$-final.txt
+  - cat $projectName$-full-resolves.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
 
 Commands-pp:
-  - cat $projectName$-puredns.txt passive.txt | dnsgen - | dnsx -silent | sort -u > $projectName$-final.txt
+  - cat $projectName$-puredns.txt passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
 
 Commands-pn:
-  - cat $projectName$-full-resolves.txt | sort -u > $projectName$-final.txt
+  - cat $projectName$-full-resolves.txt | dnsx -re |sort -u > $projectName$-final.txt
 
 
 

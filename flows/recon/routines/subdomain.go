@@ -118,21 +118,25 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 	cpn, _ := data["Commands-pn"].([]interface{})
 
 	// run commands
-	runCommand(cp, params)
-	if anySwitch.WC {
-		runCommand(cw, params)
-	} else {
-		runCommand(cr, params)
-	}
-	runCommand(cb, params)
-	if anySwitch.PR {
-		runCommand(cpr, params)
-	}
-	if anySwitch.PP {
-		runCommand(cpp, params)
-	}
-	if anySwitch.PN {
-		runCommand(cpn, params)
+	filePassiveStatus := fmt.Sprintf("%s-passive.txt", projectName)
+	fileResolveStatus := fmt.Sprintf("%s-final.txt", projectName)
+	if !fileExists(fileResolveStatus) && !fileExists(filePassiveStatus) {
+		runCommand(cp, params)
+		if anySwitch.WC {
+			runCommand(cw, params)
+		} else {
+			runCommand(cr, params)
+		}
+		runCommand(cb, params)
+		if anySwitch.PR {
+			runCommand(cpr, params)
+		}
+		if anySwitch.PP {
+			runCommand(cpp, params)
+		}
+		if anySwitch.PN {
+			runCommand(cpn, params)
+		}
 	}
 
 	//set passive and resolves
@@ -278,4 +282,17 @@ func executeCommand(command string) (string, error) {
 		return "", err
 	}
 	return string(output), nil
+}
+
+func fileExists(filename string) bool {
+	// Use os.Stat to get file information
+	_, err := os.Stat(filename)
+
+	// Check if the error indicates that the file doesn't exist
+	if os.IsNotExist(err) {
+		return false
+	}
+
+	// Return true if no error occurred (file exists or other error occurred)
+	return err == nil
 }
