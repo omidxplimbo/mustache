@@ -18,3 +18,7 @@ func Fetal(m string) {
 	color.Red("[Fatal] %s \n", m)
 	os.Exit(0)
 }
+
+func WarningC(m string) {
+	color.HiYellow("[Warning] %s \n", m)
+}

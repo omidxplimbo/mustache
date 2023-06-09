@@ -254,7 +254,7 @@ func runCommand(cp []interface{}, params CommandParams) {
 		logger.Info(fmt.Sprintf("Running Process: " + command))
 		_, err := executeCommand(command)
 		if err != nil {
-			logger.Warning(fmt.Sprintf("Command execution error: %v\n", err))
+			logger.WarningC(fmt.Sprintf("Command execution error: %v\n", err))
 			continue
 		}
 		logger.Info(fmt.Sprintf("Run Process Successfully: " + command))
