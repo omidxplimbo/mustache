@@ -233,7 +233,8 @@ func setLiveHosts(projectName string) []LiveHosts {
 
 		// Ensure there are exactly 2 parts (subdomain and IP)
 		if len(parts) > 1 {
-			subdomain := parts[0]
+			subdomain := strings.Trim(parts[0], "https://")
+			subdomain = strings.Trim(subdomain, "http://")
 			CDN := strings.Trim(parts[1], "[]")
 
 			liveHost := LiveHosts{

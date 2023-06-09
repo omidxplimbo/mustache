@@ -24,7 +24,7 @@ Commands-pr:
   - cat $projectName$-full-resolves.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
 
 Commands-pp:
-  - cat $projectName$-puredns.txt passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
+  - cat $projectName$-puredns.txt $projectName$-passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
 
 Commands-pn:
   - cat $projectName$-full-resolves.txt | dnsx -re | sort -u > $projectName$-final.txt
