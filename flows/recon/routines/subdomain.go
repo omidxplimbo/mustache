@@ -116,6 +116,7 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 	cpr, _ := data["Commands-pr"].([]interface{})
 	cpp, _ := data["Commands-pp"].([]interface{})
 	cpn, _ := data["Commands-pn"].([]interface{})
+	cf, _ := data["Commands-final"].([]interface{})
 
 	// run commands
 	filePassiveStatus := fmt.Sprintf("%s-passive.txt", projectName)
@@ -177,6 +178,9 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 			rs = append(rs, resolves)
 		}
 	}
+
+	// remove temp file
+	runCommand(cf, params)
 	return subdomains, rs, nil
 }
 
@@ -222,7 +226,7 @@ func setResolveSubdomain(projectName string) []ResolvesSubdomain {
 		parts := strings.Split(line, " ")
 
 		// Ensure there are exactly 2 parts (subdomain and IP)
-		if len(parts) == 2 {
+		if len(parts) > 2 {
 			subdomain := parts[0]
 			ip := strings.Trim(parts[1], "[]")
 

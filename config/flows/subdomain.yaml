@@ -29,8 +29,8 @@ Commands-pp:
 Commands-pn:
   - cat $projectName$-full-resolves.txt | dnsx -re |sort -u > $projectName$-final.txt
 
-
-
+Commands-final:
+  rm $projectName$-*
 
 
 
