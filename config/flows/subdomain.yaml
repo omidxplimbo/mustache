@@ -5,9 +5,9 @@ Commands-passive:
   - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
   - findomain -t $domain$ | tee $projectName$-findomain.txt
   - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
-  - crtsh $domain$ >  $projectName$-crt.txt
-  - secrd $domain$ >  $projectName$-secrd.txt
-  - rapidns $domain$ >  $projectName$-rapidns.txt
+  - crtsh $domain$ | tee  $projectName$-crt.txt
+  - secrd $domain$ | tee  $projectName$-secrd.txt
+  - rapidns $domain$ | tee  $projectName$-rapidns.txt
   - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
   - cat $projectName$-* | sort -u > $projectName$-passive.txt
 
