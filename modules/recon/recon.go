@@ -9,8 +9,6 @@ import (
 
 type Recon struct{}
 
-var pnFlag = false
-
 func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp *bool, pn *bool) {
 	if projectName == "" {
 		log.Fatal("Project flag is required. Please use -h for help.")
@@ -24,11 +22,11 @@ func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp
 	if (*pr && *pp && *pn) || (*pr && *pp) || (*pn && *pp) || (*pr && *pn) {
 		logger.Warning("You can use just one of the pr,pn,pp flag. Pleas use -h to show help")
 	}
-	pnFlag = false
+
 	if !*pr && !*pp && !*pn {
-		pnFlag = true
+		*pn = true
 	}
 
 	// send request to flow if exists
-	recon.General(projectName, target, *wc, *pr, *pp, pnFlag)
+	recon.General(projectName, target, *wc, *pr, *pp, *pn)
 }
