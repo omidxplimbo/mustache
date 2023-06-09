@@ -27,10 +27,10 @@ Commands-pp:
   - cat $projectName$-puredns.txt passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
 
 Commands-pn:
-  - cat $projectName$-full-resolves.txt | dnsx -re |sort -u > $projectName$-final.txt
+  - cat $projectName$-full-resolves.txt | dnsx -re | sort -u > $projectName$-final.txt
 
 Commands-lives:
-  - cat $projectName$-final.txt | httpx -silent -follow-host-redirects -cdn | sort -u > $projectName$-lives.txt
+  - cat $projectName$-full-resolves.txt | httpx -silent -follow-host-redirects -cdn | sort -u > $projectName$-lives.txt
 
 Commands-final:
   - rm $projectName$-*
