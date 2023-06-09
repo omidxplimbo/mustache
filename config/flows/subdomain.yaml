@@ -30,7 +30,7 @@ Commands-pn:
   - cat $projectName$-full-resolves.txt | dnsx -re |sort -u > $projectName$-final.txt
 
 Commands-lives:
-  - cat $projectName$-final.txt | httpx -silent -follow-host-redirects -cdn -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0) Gecko/20100101 Firefox/108.0" | tee $projectName-lives.txt
+  - cat $projectName$-final.txt | httpx -silent -follow-host-redirects -cdn | sort -u > $projectName$-lives.txt
 
 Commands-final:
   - rm $projectName$-*

@@ -247,7 +247,6 @@ func setLiveHosts(projectName string) []LiveHosts {
 			subdomain := parts[0]
 			liveHost := LiveHosts{
 				Subdomain: subdomain,
-				CDN:       "",
 				Http:      true,
 			}
 
