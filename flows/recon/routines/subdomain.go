@@ -35,6 +35,12 @@ type CheckAnySwitch struct {
 	PN bool
 }
 
+type LiveHosts struct {
+	Subdomain string
+	CDN       string
+	Http      bool
+}
+
 func SubDomain(projectName string, target string, pr bool, pn bool, pp bool, wc bool) {
 	projectConfig := config.ProjectConfig()
 
@@ -85,7 +91,7 @@ func runYaml(data map[string]interface{}, projectName string, domain string, any
 		ResolverPath: resolverPath,
 	}
 
-	subdomains, resolveSubdomain, err := executeCommands(data, params, anySwitch, projectName)
+	subdomains, resolveSubdomain, liveSubdomains, err := executeCommands(data, params, anySwitch, projectName)
 	if err != nil {
 		logger.Warning(err.Error())
 		return
@@ -99,15 +105,21 @@ func runYaml(data map[string]interface{}, projectName string, domain string, any
 		resolveSubdomainDb := db.Subdomain{}
 		resolveSubdomainDb.InsertSubdomain(resolveSubdomain, projectName)
 	}
+	if len(liveSubdomains) > 0 {
+		liveSubdomainsDb := db.Subdomain{}
+		liveSubdomainsDb.InsertSubdomain(liveSubdomains, projectName)
+	}
 }
 
-func executeCommands(data map[string]interface{}, params CommandParams, anySwitch CheckAnySwitch, projectName string) ([]db.Subdomain, []db.Subdomain, error) {
+func executeCommands(data map[string]interface{}, params CommandParams, anySwitch CheckAnySwitch, projectName string) ([]db.Subdomain, []db.Subdomain, []db.Subdomain, error) {
 
 	// Set Commands and init data
 	var subdomains []db.Subdomain
 	var rs []db.Subdomain
+	var lives []db.Subdomain
 	var passiveSubdomain []string
 	var resolves []ResolvesSubdomain
+	var liveHosts []LiveHosts
 
 	cp, _ := data["Commands-passive"].([]interface{})
 	cw, _ := data["Commands-wc"].([]interface{})
@@ -116,12 +128,14 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 	cpr, _ := data["Commands-pr"].([]interface{})
 	cpp, _ := data["Commands-pp"].([]interface{})
 	cpn, _ := data["Commands-pn"].([]interface{})
+	cl, _ := data["Commands-lives"].([]interface{})
 	cf, _ := data["Commands-final"].([]interface{})
 
 	// run commands
 	filePassiveStatus := fmt.Sprintf("%s-passive.txt", projectName)
 	fileResolveStatus := fmt.Sprintf("%s-final.txt", projectName)
-	if !fileExists(fileResolveStatus) && !fileExists(filePassiveStatus) {
+	fileLivesStatus := fmt.Sprintf("%s-lives.txt", projectName)
+	if !fileExists(fileResolveStatus) && !fileExists(filePassiveStatus) && !fileExists(fileLivesStatus) {
 		runCommand(cp, params)
 		if anySwitch.WC {
 			runCommand(cw, params)
@@ -138,11 +152,13 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 		if anySwitch.PN {
 			runCommand(cpn, params)
 		}
+		runCommand(cl, params)
 	}
 
 	//set passive and resolves
 	passiveSubdomain = setPassiveSubdomain(projectName)
 	resolves = setResolveSubdomain(projectName)
+	liveHosts = setLiveHosts(projectName)
 
 	// save passive domain into database
 	if len(passiveSubdomain) > 0 {
@@ -178,10 +194,68 @@ func executeCommands(data map[string]interface{}, params CommandParams, anySwitc
 			rs = append(rs, resolves)
 		}
 	}
+	if len(liveHosts) > 0 {
+		for _, line := range liveHosts {
+			resolves := db.Subdomain{
+				Domain:      projectName,
+				Subdomain:   strings.TrimSpace(line.Subdomain),
+				CreatedDate: time.Now(),
+				UpdatedDate: time.Now(),
+				Http:        line.Http,
+				CDN:         line.CDN,
+			}
+			lives = append(lives, resolves)
+		}
+	}
 
 	// remove temp file
 	runCommand(cf, params)
-	return subdomains, rs, nil
+	return subdomains, rs, lives, nil
+}
+
+func setLiveHosts(projectName string) []LiveHosts {
+	var liveHosts []LiveHosts
+
+	filePath := fmt.Sprintf("%s-lives.txt", projectName)
+
+	// Open the file
+	file, err := os.Open(filePath)
+	if err != nil {
+		logger.Fetal(fmt.Sprintf("Failed to open file: %v\n", err))
+	}
+	defer file.Close()
+
+	// Read the file line by line
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.Split(line, " ")
+
+		// Ensure there are exactly 2 parts (subdomain and IP)
+		if len(parts) > 1 {
+			subdomain := parts[0]
+			CDN := strings.Trim(parts[1], "[]")
+
+			liveHost := LiveHosts{
+				Subdomain: subdomain,
+				Http:      true,
+				CDN:       CDN,
+			}
+
+			liveHosts = append(liveHosts, liveHost)
+		} else {
+			subdomain := parts[0]
+			liveHost := LiveHosts{
+				Subdomain: subdomain,
+				CDN:       "",
+				Http:      true,
+			}
+
+			liveHosts = append(liveHosts, liveHost)
+		}
+	}
+
+	return liveHosts
 }
 
 func setPassiveSubdomain(projectName string) []string {
