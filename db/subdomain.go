@@ -72,7 +72,7 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 	// Get project config
 	configProject := config.ProjectConfig()
 
-	// Connect to databaseÒ
+	// Connect to database
 	client, _ := ConnectToDatabase()
 
 	// Check if database exists
@@ -85,41 +85,24 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 
 	for _, subdomain := range data {
 		filter := bson.M{"subdomain": subdomain.Subdomain}
-		update := bson.M{
-			"$set": bson.M{
-				"domain":       subdomain.Domain,
-				"updated_date": time.Now(),
-				"http": bson.M{
-					"$cond": bson.A{
-						bson.M{"$ne": bson.A{"$http", subdomain.Http}},
-						subdomain.Http,
-						"$http",
-					},
-				},
-				"cdn": bson.M{
-					"$cond": bson.A{
-						bson.M{"$ne": bson.A{"$cdn", subdomain.CDN}},
-						subdomain.CDN,
-						"$cdn",
-					},
-				},
-				"ip": bson.M{
-					"$cond": bson.A{
-						bson.M{"$ne": bson.A{"$ip", subdomain.IP}},
-						subdomain.IP,
-						"$ip",
-					},
-				},
-				"cidr": bson.M{
-					"$cond": bson.A{
-						bson.M{"$ne": bson.A{"$cidr", subdomain.CIDR}},
-						subdomain.CIDR,
-						"$cidr",
-					},
-				},
-			},
-			"$setOnInsert": bson.M{"created_date": time.Now()},
+		update := bson.M{"$set": bson.M{}}
+
+		if subdomain.Domain != "" {
+			update["$set"].(bson.M)["domain"] = subdomain.Domain
 		}
+		if subdomain.Http != s.Http {
+			update["$set"].(bson.M)["http"] = subdomain.Http
+		}
+		if subdomain.CDN != s.CDN {
+			update["$set"].(bson.M)["cdn"] = subdomain.CDN
+		}
+		if subdomain.IP != "" {
+			update["$set"].(bson.M)["ip"] = subdomain.IP
+		}
+		if subdomain.CIDR != "" {
+			update["$set"].(bson.M)["cidr"] = subdomain.CIDR
+		}
+		update["$setOnInsert"] = bson.M{"created_date": time.Now()}
 		updateModel := mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update).SetUpsert(true)
 		updates = append(updates, updateModel)
 	}
