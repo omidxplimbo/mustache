@@ -24,7 +24,7 @@ type Subdomain struct {
 	CDN         string    `bson:"cdn"`
 }
 
-func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
+/*func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 
 	// Get project config
 	configProject := config.ProjectConfig()
@@ -66,6 +66,72 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 
 	logger.Info(fmt.Sprintf("Subdomains added to %s project at: %s", projectName, time.Now().Format(configProject.TimeShow)))
 
+}*/
+
+func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
+	// Get project config
+	configProject := config.ProjectConfig()
+
+	// Connect to databaseÒ
+	client, _ := ConnectToDatabase()
+
+	// Check if database exists
+	dbName := configProject.DbPrefix + projectName
+
+	// Insert the array of data into the MongoDB collection
+	collection := client.Database(dbName).Collection(configProject.Collections[0])
+
+	var updates []mongo.WriteModel
+
+	for _, subdomain := range data {
+		filter := bson.M{"subdomain": subdomain.Subdomain}
+		update := bson.M{
+			"$set": bson.M{
+				"domain":       subdomain.Domain,
+				"updated_date": time.Now(),
+				"http": bson.M{
+					"$cond": bson.A{
+						bson.M{"$ne": bson.A{"$http", subdomain.Http}},
+						subdomain.Http,
+						"$http",
+					},
+				},
+				"cdn": bson.M{
+					"$cond": bson.A{
+						bson.M{"$ne": bson.A{"$cdn", subdomain.CDN}},
+						subdomain.CDN,
+						"$cdn",
+					},
+				},
+				"ip": bson.M{
+					"$cond": bson.A{
+						bson.M{"$ne": bson.A{"$ip", subdomain.IP}},
+						subdomain.IP,
+						"$ip",
+					},
+				},
+				"cidr": bson.M{
+					"$cond": bson.A{
+						bson.M{"$ne": bson.A{"$cidr", subdomain.CIDR}},
+						subdomain.CIDR,
+						"$cidr",
+					},
+				},
+			},
+			"$setOnInsert": bson.M{"created_date": time.Now()},
+		}
+		updateModel := mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update).SetUpsert(true)
+		updates = append(updates, updateModel)
+	}
+
+	opts := options.BulkWrite().SetOrdered(false)
+
+	_, err := collection.BulkWrite(context.Background(), updates, opts)
+	if err != nil {
+		logger.Fetal(err.Error())
+	}
+
+	logger.Info(fmt.Sprintf("Subdomains added to %s project at: %s", projectName, time.Now().Format(configProject.TimeShow)))
 }
 
 func (s Subdomain) GetAllSubdomain(projectName string) {
