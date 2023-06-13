@@ -93,6 +93,12 @@ func ShowHelp() {
 		{"get-sub", "Get Subdomain information of project", "Watch"},
 	}
 
+	update := [][]string{
+		{"cdn", "Update CDN ranges", "Update"},
+		{"wordlist", "Update static wordList", "Update"},
+		{"resolvers", "Update resolvers", "Update"},
+	}
+
 	// Define the table format
 	format := "| %-18s | %-98s | %-17s|\n"
 	headers := []string{"Flow Name", "Description", "Module Name"}
@@ -115,6 +121,11 @@ func ShowHelp() {
 	fmt.Println()
 	color.Magenta("Watch Tower Module. We Are Mustache Team")
 	bannerMaker(watch, format, headers)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	color.Red("Update Tools Module. We Are Mustache Team")
+	bannerMaker(update, format, headers)
 
 	os.Exit(0)
 }
