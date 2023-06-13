@@ -103,8 +103,10 @@ func projectHandle(flow string, projectName string, collection string, path stri
 		project.Report(projectName)
 	case "remove":
 		project.Remove(projectName)
+	case "all":
+		project.All()
 	default:
-		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")
+		fmt.Println("Flow Flag Cannot Be Empty Or Wrong. Please Use -h For Get Help")
 		os.Exit(0)
 	}
 

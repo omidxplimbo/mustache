@@ -26,6 +26,7 @@ func ShowHelp() {
 		mustache -module project -flow backup -project [projectName] -collection [collectionName] -path [pathFile]
 		mustache -module project -flow remove -project [projectName]
 		mustache -module project -flow report -project [projectName]
+		mustache -module project -flow all
 		`
 	usageRecon := `
 	Flags and usage for Recon module:
@@ -75,6 +76,7 @@ func ShowHelp() {
 		{"backup", "Download backup data from project", "Project"},
 		{"report", "Create report from project", "Project"},
 		{"remove", "Remove all data and database for special project", "Project"},
+		{"all", "Get all projects", "Project"},
 	}
 
 	watch := [][]string{

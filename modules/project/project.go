@@ -47,3 +47,8 @@ func (p Project) Remove(projectName string) {
 	// send request to flow if exists
 	project.RemoveProject(projectName)
 }
+
+func (p Project) All() {
+	// Get all project
+	project.AllProject()
+}
