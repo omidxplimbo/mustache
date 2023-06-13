@@ -25,7 +25,6 @@ type Subdomain struct {
 }
 
 func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
-
 	// Get project config
 	configProject := config.ProjectConfig()
 
@@ -42,17 +41,24 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 
 	for _, subdomain := range data {
 		filter := bson.M{"subdomain": subdomain.Subdomain}
-		update := bson.M{
-			"$set": bson.M{
-				"domain":       subdomain.Domain,
-				"updated_date": time.Now(),
-				"ip":           subdomain.IP,
-				"cidr":         subdomain.CIDR,
-				"http":         subdomain.Http,
-				"cdn":          subdomain.CDN,
-			},
-			"$setOnInsert": bson.M{"created_date": time.Now()},
+		update := bson.M{"$set": bson.M{}}
+
+		if subdomain.Domain != "" {
+			update["$set"].(bson.M)["domain"] = subdomain.Domain
 		}
+		if subdomain.Http != s.Http {
+			update["$set"].(bson.M)["http"] = subdomain.Http
+		}
+		if subdomain.CDN != s.CDN {
+			update["$set"].(bson.M)["cdn"] = subdomain.CDN
+		}
+		if subdomain.IP != "" {
+			update["$set"].(bson.M)["ip"] = subdomain.IP
+		}
+		if subdomain.CIDR != "" {
+			update["$set"].(bson.M)["cidr"] = subdomain.CIDR
+		}
+		update["$setOnInsert"] = bson.M{"created_date": time.Now()}
 		updateModel := mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update).SetUpsert(true)
 		updates = append(updates, updateModel)
 	}
@@ -65,7 +71,6 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 	}
 
 	logger.Info(fmt.Sprintf("Subdomains added to %s project at: %s", projectName, time.Now().Format(configProject.TimeShow)))
-
 }
 
 func (s Subdomain) GetAllSubdomain(projectName string) {
@@ -159,7 +164,7 @@ func (s Subdomain) LatestSubdomain(projectName string, count int) {
 	}
 }
 
-func (s Subdomain) LivesSubdomain(projectName string) {
+func (s Subdomain) LivesSubdomain(projectName string, justCount *bool) {
 	// Get project config
 	configProject := config.ProjectConfig()
 
@@ -184,22 +189,25 @@ func (s Subdomain) LivesSubdomain(projectName string) {
 	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), filter)
 	logger.Info(fmt.Sprintf("All Live Subdomain for %s", projectName))
 	logger.Info(fmt.Sprintf("Count of live subdomains for %s project is: %d", projectName, countItem))
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
+	if !*justCount {
+		for cursor.Next(context.Background()) {
+			var result bson.M
+			err := cursor.Decode(&result)
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			prettyJSON, err := json.MarshalIndent(result, "", "    ")
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			color.Yellow(string(prettyJSON))
+		}
+
+		if err := cursor.Err(); err != nil {
 			logger.Fetal(err.Error())
 		}
-		prettyJSON, err := json.MarshalIndent(result, "", "    ")
-		if err != nil {
-			logger.Fetal(err.Error())
-		}
-		color.Yellow(string(prettyJSON))
 	}
 
-	if err := cursor.Err(); err != nil {
-		logger.Fetal(err.Error())
-	}
 }
 
 func (s Subdomain) LatestLivesSubdomain(projectName string, count int) {
@@ -290,6 +298,53 @@ func (s Subdomain) GetSub(projectName string, target string) {
 
 	if err := cursor.Err(); err != nil {
 		logger.Fetal(err.Error())
+	}
+
+}
+
+func (s Subdomain) ResolvedSubdomain(projectName string, justCount *bool) {
+	// Get project config
+	configProject := config.ProjectConfig()
+
+	// Connect to database
+	client, _ := ConnectToDatabase()
+
+	// Check if database exists
+	dbName := configProject.DbPrefix + projectName
+
+	// Insert the array of data into the MongoDB collection
+	collection := client.Database(dbName).Collection(configProject.Collections[0])
+
+	filter := bson.M{"ip": bson.M{"$exists": true, "$ne": ""}}
+
+	cursor, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		logger.Fetal(err.Error())
+	}
+
+	defer cursor.Close(context.Background())
+
+	// Iterate through the cursor and print the documents
+	countItem, _ := client.Database(dbName).Collection(configProject.Collections[0]).CountDocuments(context.Background(), filter)
+	logger.Info(fmt.Sprintf("All Resolved Subdomain for %s", projectName))
+	logger.Info(fmt.Sprintf("Count of resolved subdomains for %s project is: %d", projectName, countItem))
+	if !*justCount {
+		for cursor.Next(context.Background()) {
+			var result bson.M
+			err := cursor.Decode(&result)
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			prettyJSON, err := json.MarshalIndent(result, "", "    ")
+			if err != nil {
+				logger.Fetal(err.Error())
+			}
+			color.Yellow(string(prettyJSON))
+		}
+
+		if err := cursor.Err(); err != nil {
+			logger.Fetal(err.Error())
+		}
 	}
 
 }

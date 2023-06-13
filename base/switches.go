@@ -21,6 +21,12 @@ func HandleSwitch() {
 	projectName := flag.String("project", "", "Create project in database")
 	collection := flag.String("collection", "all", "Collection project in database")
 	count := flag.Int("count", 10, "Count of result")
+	pn := flag.Bool("pn", false, "Dont permutation subdomain")
+	pr := flag.Bool("pr", false, "Permutation just for resolved subdomain")
+	pp := flag.Bool("pp", false, "Permutation for all passive founded subdomain")
+	wildCard := flag.Bool("wc", false, "Wildcard domain")
+	jc := flag.Bool("jc", false, "Get just count of items")
+
 	flag.Parse()
 
 	// Show help function
@@ -35,21 +41,21 @@ func HandleSwitch() {
 	case "continues":
 		continuesHandle(*flow, *projectName, *dbName, *pathFile, *target)
 	case "recon":
-		reconHandle(*flow, *projectName, *target)
+		reconHandle(*flow, *projectName, *target, pr, pn, pp, wildCard)
 	case "watch":
-		watchHandle(*flow, *projectName, *count, *target)
+		watchHandle(*flow, *projectName, *count, *target, jc)
 	default:
 		fmt.Println("Wrong Selected Module. Please use -h for get help")
 	}
 
 }
 
-func reconHandle(flow string, projectName string, target string) {
+func reconHandle(flow string, projectName string, target string, pr *bool, pn *bool, pp *bool, wc *bool) {
 
 	recon := reconModule.Recon{}
 	switch flow {
 	case "general":
-		recon.General(projectName, target)
+		recon.General(projectName, target, wc, pr, pp, pn)
 	default:
 		fmt.Println("Recon Flow Very Soon")
 	}
@@ -97,14 +103,16 @@ func projectHandle(flow string, projectName string, collection string, path stri
 		project.Report(projectName)
 	case "remove":
 		project.Remove(projectName)
+	case "all":
+		project.All()
 	default:
-		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")
+		fmt.Println("Flow Flag Cannot Be Empty Or Wrong. Please Use -h For Get Help")
 		os.Exit(0)
 	}
 
 }
 
-func watchHandle(flow string, projectName string, count int, target string) {
+func watchHandle(flow string, projectName string, count int, target string, justCount *bool) {
 
 	watch := watchModule.Watch{}
 	switch flow {
@@ -113,11 +121,13 @@ func watchHandle(flow string, projectName string, count int, target string) {
 	case "latest-sub":
 		watch.LatestSubdomain(projectName, count)
 	case "lives":
-		watch.LivesSubdomain(projectName)
+		watch.LivesSubdomain(projectName, justCount)
 	case "latest-lives":
 		watch.LatestLivesSubdomain(projectName, count)
 	case "get-sub":
 		watch.GetSub(projectName, target)
+	case "resolved":
+		watch.Resolved(projectName, justCount)
 
 	default:
 		fmt.Println("Flow Flag Cannot Be Empty. Please Use -h For Get Help")

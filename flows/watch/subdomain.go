@@ -14,10 +14,10 @@ func LatestSubdomain(projectName string, count int) {
 	subdomain.LatestSubdomain(projectName, count)
 }
 
-func LivesSubdomain(projectName string) {
+func LivesSubdomain(projectName string, justCount *bool) {
 
 	subdomain := db.Subdomain{}
-	subdomain.LivesSubdomain(projectName)
+	subdomain.LivesSubdomain(projectName, justCount)
 }
 
 func LatestLivesSubdomain(projectName string, count int) {
@@ -30,4 +30,10 @@ func GetSub(projectName string, target string) {
 
 	subdomain := db.Subdomain{}
 	subdomain.GetSub(projectName, target)
+}
+
+func ResolvedSubdomain(projectName string, justCount *bool) {
+
+	subdomain := db.Subdomain{}
+	subdomain.ResolvedSubdomain(projectName, justCount)
 }

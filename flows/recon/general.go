@@ -3,6 +3,7 @@ package recon
 import (
 	"fmt"
 	"github.com/omidxplimbo/mustache/config"
+	"github.com/omidxplimbo/mustache/db"
 	recon "github.com/omidxplimbo/mustache/flows/recon/routines"
 	"github.com/omidxplimbo/mustache/logger"
 	"gopkg.in/yaml.v3"
@@ -10,9 +11,13 @@ import (
 	"time"
 )
 
-func General(projectName string, target string) {
+func General(projectName string, target string, wc bool, pr bool, pp bool, pn bool) {
 
 	projectConfig := config.ProjectConfig()
+
+	// Check project exist
+	db.CheckProject(projectName)
+
 	logger.Info(fmt.Sprintf("Running general flow at: %s", time.Now().Format(projectConfig.TimeShow)))
 
 	// Check yaml files for get all routines in the general flow
@@ -28,12 +33,10 @@ func General(projectName string, target string) {
 		logger.Fetal("Yaml Configuration not exist")
 	}
 
-	logger.Info(fmt.Sprintf("Running routin flow %s at: %s", data["name"].(string), time.Now().Format(projectConfig.TimeShow)))
-
 	for _, routine := range data["routine"].([]interface{}) {
 		switch routine {
 		case "subdomain":
-			recon.SubDomain(projectName, target)
+			recon.SubDomain(projectName, target, pr, pn, pp, wc)
 		default:
 			logger.Warning(fmt.Sprintf("There isn't any routins in the general flow"))
 		}
