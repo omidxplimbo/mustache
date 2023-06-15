@@ -7,7 +7,6 @@ import (
 	"github.com/omidxplimbo/mustache/base/runner/flows"
 	"github.com/omidxplimbo/mustache/db"
 	"github.com/omidxplimbo/mustache/logger"
-	"io"
 	"os"
 	"strings"
 	"time"
@@ -57,19 +56,8 @@ func SubDomain(args ...interface{}) {
 	flagsMap["PN"] = allFlags.PN
 	flagsMap["PP"] = allFlags.PP
 
-	// execute flow if not data exist
-	filePassiveStatus := fmt.Sprintf("%s-passive.txt", projectName)
-	fileResolveStatus := fmt.Sprintf("%s-final.txt", projectName)
-	fileLivesStatus := fmt.Sprintf("%s-lives.txt", projectName)
-	fileResolveForLiveStatus := fmt.Sprintf("%s-finalLive.txt", projectName)
-	if !fileExists(fileResolveStatus) && !fileExists(filePassiveStatus) && !fileExists(fileLivesStatus) {
-
-		flows.RunnerFlow{}.ExecuteFlows(data, projectName, target, flagsMap)
-
-		if !fileExists(fileResolveForLiveStatus) {
-			modifyFile(fileResolveStatus, fileResolveForLiveStatus)
-		}
-	}
+	// run flow
+	flows.RunnerFlow{}.ExecuteFlows(data, projectName, target, flagsMap)
 
 	//set passive and resolves into database
 	setPassiveSubdomain(projectName)
@@ -248,69 +236,5 @@ func setResolveSubdomain(projectName string) {
 	if len(rs) > 0 {
 		resolveSubdomainDb := db.Subdomain{}
 		resolveSubdomainDb.InsertSubdomain(rs, projectName)
-	}
-}
-
-func fileExists(filename string) bool {
-	// Use os.Stat to get file information
-	_, err := os.Stat(filename)
-
-	// Check if the error indicates that the file doesn't exist
-	if os.IsNotExist(err) {
-		return false
-	}
-
-	// Return true if no error occurred (file exists or other error occurred)
-	return err == nil
-}
-
-func modifyFile(fileResolveStatus string, fileResolveForLiveStatus string) {
-	sourceFile, err := os.Open(fileResolveStatus)
-	if err != nil {
-		logger.Warning(err.Error())
-	}
-	defer sourceFile.Close()
-
-	destFile, err := os.Create(fileResolveForLiveStatus)
-	if err != nil {
-		logger.Warning(err.Error())
-	}
-	defer destFile.Close()
-
-	_, err = io.Copy(destFile, sourceFile)
-	if err != nil {
-		logger.Warning(err.Error())
-	}
-	// Open the text file for reading and writing
-	file, err := os.OpenFile(fileResolveForLiveStatus, os.O_RDWR, 0644)
-	if err != nil {
-		logger.Warning(err.Error())
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	// Create a buffer to store the modified lines
-	var lines []string
-
-	// Loop over each line and remove [ip] if it exists
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.Contains(line, " [") {
-			line = strings.Split(line, " [")[0]
-		}
-		lines = append(lines, line)
-	}
-	// Write the modified lines back to the file
-	_, err = file.Seek(0, 0)
-	if err != nil {
-		logger.Warning(err.Error())
-	}
-	writer := bufio.NewWriter(file)
-	for _, line := range lines {
-		fmt.Fprintln(writer, line)
-	}
-
-	err = writer.Flush()
-	if err != nil {
-		logger.Warning(err.Error())
 	}
 }
