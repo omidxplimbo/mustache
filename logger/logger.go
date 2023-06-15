@@ -10,6 +10,10 @@ func Info(m string) {
 	color.Green("[Info] %s \n", m)
 }
 
+func Process(m string) {
+	color.HiGreen("[+] %s \n", m)
+}
+
 func Warning(m string) {
 	color.Yellow("[War] %s \n", m)
 	fmt.Println()

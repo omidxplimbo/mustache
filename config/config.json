@@ -11,7 +11,9 @@
     "resolvers": "{{projectPath}}/config/resolvers",
     "configs": "{{projectPath}}/config/binary-configs",
     "binaries": "{{home}}/mustache/binaries",
-    "logs": "{{home}}/mustache/logs"
+    "logs": "{{home}}/mustache/logs",
+    "routines": "config/base-routine",
+    "flows": "config/flows"
   },
   "collections": [
     "subdomain",
@@ -30,5 +32,14 @@
   "providers": {
     "chaosApi": "FgD0j31YWBOenZdMkeysfuorGYP1oRUQ6waMDH1XcBYR0Pap3q1CFlei7k19tYGW",
     "crtSh": "Must bash handle"
-  }
+  },
+  "excludeDomain": [
+    "google",
+    "yahoo",
+    "twitter",
+    "github",
+    "facebook",
+    "gitlab",
+    "linkedin"
+  ]
 }

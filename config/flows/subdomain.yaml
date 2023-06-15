@@ -1,42 +1,33 @@
 name: subdomain
-description: subdomain enumeration passive and active
-Commands-passive:
-  - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent -config $configPath$/subfinder.yaml
-  - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
-  - findomain -t $domain$ | tee $projectName$-findomain.txt
-  - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
-  - crtsh $domain$ | tee  $projectName$-crt.txt
-  - secrd $domain$ | tee  $projectName$-secrd.txt
-  - rapidns $domain$ | tee  $projectName$-rapidns.txt
-  - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
-  - cat $projectName$-* | sort -u > $projectName$-passive.txt
+description: Subdomain enumeration passive and active
 
-Commands-wc:
-  - shuffledns -l $projectName$-passive.txt -o $projectName$-resolves.txt
-Commands-resolver:
-  - dnsx -l $projectName$-passive.txt -o $projectName$-resolves.txt
-
-Commands-bruteForce:
-  - puredns bruteforce $wordlist$/wordlist.txt $domain$ --resolvers $resolver$/resolver.txt > $projectName$-puredns.txt
-  - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u > $projectName$-full-resolves.txt
-
-Commands-pr:
-  - cat $projectName$-full-resolves.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
-
-Commands-pp:
-  - cat $projectName$-puredns.txt $projectName$-passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
-
-Commands-pn:
-  - cat $projectName$-full-resolves.txt | dnsx -re | sort -u > $projectName$-final.txt
-
-Commands-lives:
-  - cat $projectName$-finalLive.txt | httpx -silent -follow-host-redirects -cdn | sort -u > $projectName$-lives.txt
-
-Commands-final:
-  - rm $projectName$-*
-
-
-
+steps:
+  - scripts:
+      - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent -config $configPath$/subfinder.yaml
+      - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
+      - findomain -t $domain$ | tee $projectName$-findomain.txt
+      - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
+      - crtsh $domain$ | tee  $projectName$-crt.txt
+      - secrd $domain$ | tee  $projectName$-secrd.txt
+      - rapidns $domain$ | tee  $projectName$-rapidns.txt
+      - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
+      - cat $projectName$-* | sort -u > $projectName$-passive.txt
+  - switches:
+      - WC: shuffledns -l $projectName$-passive.txt -o $projectName$-resolves.txt
+      - NWC: dnsx -l $projectName$-passive.txt -o $projectName$-resolves.txt
+  - scripts:
+      - puredns bruteforce $wordlist$/wordlist.txt $domain$ --resolvers $resolver$/resolver.txt > $projectName$-puredns.txt
+      - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u > $projectName$-full-resolves.txt
+  - switches:
+      - PR: cat $projectName$-full-resolves.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
+      - PP: cat $projectName$-puredns.txt $projectName$-passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
+      - PN: cat $projectName$-full-resolves.txt | dnsx -re | sort -u > $projectName$-final.txt
+  - scripts:
+      - cat $projectName$-finalLive.txt | httpx -silent -follow-host-redirects -title -status-code -cdn -tech-detect | sort -u > $projectName$-lives.txt
+  - postRun:
+      - $projectName$-passive.txt
+      - $projectName$-final.txt
+      - $projectName$-lives.txt
 
 
 

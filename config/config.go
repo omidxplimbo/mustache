@@ -19,6 +19,8 @@ type Config struct {
 		Configs   string `json:"configs"`
 		Binaries  string `json:"binaries"`
 		Logs      string `json:"logs"`
+		Routines  string `json:"routines"`
+		Flows     string `json:"flows"`
 	} `json:"addresses"`
 	Collections []string `json:"collections"`
 	PublicError struct {
