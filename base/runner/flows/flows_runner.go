@@ -172,7 +172,7 @@ func replaceVariables(command string, params CommandParams) string {
 }
 
 func executeCommand(command string) (string, error) {
-	cmd := exec.Command("bash", "-c", command)
+	cmd := exec.Command("zsh", "-c", command)
 	output, err := cmd.Output()
 	if err != nil {
 		return "", err
