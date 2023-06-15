@@ -152,13 +152,13 @@ func setParams(projectName string, target string, data map[string]interface{}) C
 func runCommand(command string, params CommandParams) {
 
 	command = replaceVariables(command, params)
-	logger.Process(fmt.Sprintf("Running Process: " + command))
+	logger.Process(fmt.Sprintf("Running Process "))
+	logger.AddLog(fmt.Sprintf("Running Process: " + command))
 	_, err := executeCommand(command)
 	if err != nil {
 		logger.WarningC(fmt.Sprintf("Command execution error: %v\n", err))
 	}
-	logger.Info(fmt.Sprintf("Run Process Successfully: " + command))
-
+	logger.Info(fmt.Sprintf("Run Process Successfull"))
 }
 
 func replaceVariables(command string, params CommandParams) string {

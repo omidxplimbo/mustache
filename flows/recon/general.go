@@ -19,6 +19,7 @@ func General(projectName string, target string, wc bool, pr bool, pp bool, pn bo
 	db.CheckProject(projectName)
 
 	logger.Info(fmt.Sprintf("Running general flow at: %s", time.Now().Format(projectConfig.TimeShow)))
+	logger.AddLog(fmt.Sprintf("Running general flow at: %s", time.Now().Format(projectConfig.TimeShow)))
 
 	// parse yaml files
 	parserObj := parser.Parser{}
@@ -33,4 +34,5 @@ func General(projectName string, target string, wc bool, pr bool, pp bool, pn bo
 	cmd := exec.Command("bash", "-c", fmt.Sprintf("rm %s-*", projectName))
 	_ = cmd.Run()
 	logger.Info(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
+	logger.AddLog(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
 }
