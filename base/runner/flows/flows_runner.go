@@ -38,7 +38,7 @@ func (f RunnerFlow) ExecuteFlows(data map[string]interface{}, projectName string
 
 	// Set Flags
 	allSwitches := setFlags(projectName, target, flagMap)
-	allParams := setParams(projectName, target, data)
+	allParams := setParams(projectName, target)
 
 	// run flow
 	return runFlow(data, allParams, allSwitches)
@@ -134,7 +134,7 @@ func setFlags(projectName string, target string, flagsMap map[string]interface{}
 	return flags
 }
 
-func setParams(projectName string, target string, data map[string]interface{}) CommandParams {
+func setParams(projectName string, target string) CommandParams {
 
 	dir, _ := os.Getwd()
 	params := CommandParams{
@@ -172,7 +172,7 @@ func replaceVariables(command string, params CommandParams) string {
 }
 
 func executeCommand(command string) (string, error) {
-	cmd := exec.Command("zsh", "-c", command)
+	cmd := exec.Command("bash", "-c", command)
 	output, err := cmd.Output()
 	if err != nil {
 		return "", err

@@ -23,12 +23,9 @@ steps:
       - PP: cat $projectName$-puredns.txt $projectName$-passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
       - PN: cat $projectName$-full-resolves.txt | dnsx -re | sort -u > $projectName$-final.txt
   - scripts:
-      - cat $projectName$-final | awk '{print $1}' | sort -u > $projectName$-finalLive.txt
+      - cat $projectName$-final.txt | awk "{print \$1}" | sort -u > $projectName$-finalLive.txt
       - cat $projectName$-finalLive.txt | httpx -silent -follow-host-redirects -title -status-code -cdn -tech-detect | sort -u > $projectName$-lives.txt
   - postRun:
       - $projectName$-passive.txt
       - $projectName$-final.txt
       - $projectName$-lives.txt
-
-
-
