@@ -9,7 +9,7 @@ import (
 
 type Recon struct{}
 
-func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp *bool, pn *bool) {
+func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp *bool, pn *bool, aa *bool) {
 	if projectName == "" {
 		log.Fatal("Project flag is required. Please use -h for help.")
 		os.Exit(0)
@@ -28,5 +28,5 @@ func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp
 	}
 
 	// send request to flow if exists
-	recon.General(projectName, target, *wc, *pr, *pp, *pn)
+	recon.General(projectName, target, *wc, *pr, *pp, *pn, *aa)
 }

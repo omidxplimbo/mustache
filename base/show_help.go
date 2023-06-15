@@ -34,6 +34,7 @@ func ShowHelp() {
 		-pn	"If set we dont use permutation in subdomains"
 		-pr	"If set we use permutation just in resolved subdomains"
 		-pp	"If set we use permutation for all subdomains. Should use for small target"
+		-aa	"If set we use active amass for subdomains. It's take long time'"
 		-target string	"The target that we want run processes"
 
 		mustache -module recon -flow [flowName] -project [projectName] -target [targetName] [-wc] [-pn] [-pr] [-pp]`

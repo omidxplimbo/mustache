@@ -26,6 +26,7 @@ func HandleSwitch() {
 	pp := flag.Bool("pp", false, "Permutation for all passive founded subdomain")
 	wildCard := flag.Bool("wc", false, "Wildcard domain")
 	jc := flag.Bool("jc", false, "Get just count of items")
+	aa := flag.Bool("aa", false, "Set active amass")
 
 	flag.Parse()
 
@@ -41,7 +42,7 @@ func HandleSwitch() {
 	case "continues":
 		continuesHandle(*flow, *projectName, *dbName, *pathFile, *target)
 	case "recon":
-		reconHandle(*flow, *projectName, *target, pr, pn, pp, wildCard)
+		reconHandle(*flow, *projectName, *target, pr, pn, pp, wildCard, aa)
 	case "watch":
 		watchHandle(*flow, *projectName, *count, *target, jc)
 	default:
@@ -50,12 +51,12 @@ func HandleSwitch() {
 
 }
 
-func reconHandle(flow string, projectName string, target string, pr *bool, pn *bool, pp *bool, wc *bool) {
+func reconHandle(flow string, projectName string, target string, pr *bool, pn *bool, pp *bool, wc *bool, aa *bool) {
 
 	recon := reconModule.Recon{}
 	switch flow {
 	case "general":
-		recon.General(projectName, target, wc, pr, pp, pn)
+		recon.General(projectName, target, wc, pr, pp, pn, aa)
 	default:
 		fmt.Println("Recon Flow Very Soon")
 	}
