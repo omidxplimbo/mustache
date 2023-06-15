@@ -28,6 +28,7 @@ type checkAnySwitches struct {
 	PR bool
 	PN bool
 	PP bool
+	AA bool
 }
 
 func SubDomain(args ...interface{}) {
@@ -39,6 +40,7 @@ func SubDomain(args ...interface{}) {
 	pr := args[3].(bool)
 	pp := args[4].(bool)
 	pn := args[5].(bool)
+	aa := args[6].(bool)
 
 	// parse yaml files
 	data := parser.Parser{}.YamlParse("subdomain", true)
@@ -49,12 +51,14 @@ func SubDomain(args ...interface{}) {
 		PR: pr,
 		PN: pn,
 		PP: pp,
+		AA: aa,
 	}
 	flagsMap := make(map[string]interface{})
 	flagsMap["WC"] = allFlags.WC
 	flagsMap["PR"] = allFlags.PR
 	flagsMap["PN"] = allFlags.PN
 	flagsMap["PP"] = allFlags.PP
+	flagsMap["AA"] = allFlags.AA
 
 	// run flow
 	flows.RunnerFlow{}.ExecuteFlows(data, projectName, target, flagsMap)
