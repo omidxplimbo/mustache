@@ -28,10 +28,11 @@ steps:
   - switches:
       - AA: amass enum -active -d $domain$ | dnx -re | tee -a $projectName$-final.txt
   - scripts:
-      - cat $projectName$-final.txt | awk "{print \$1}" | hakip2host | awk "{print \$2}" | unfurl format $(echo "\%d") | sort -u | dnsx -re | anew $projectName$-final.txt
-      - cat $projectName$-final.txt | awk "{print \$1}" | cero | sort -u | dnsx -re | anew $projectName$-final.txt
-      - cat $projectName$-final.txt | awk "{print \$1}" | httpx -silent -csp-probe -cdn -fhr | anew $projectName$-lives.txt
-      - cat $projectName$-lives.txt | sed "s|http[s]\?://\|\|g" | awk "{print \$1}" | httpx -silent -csp-probe -cdn -fhr | sed "s|http[s]\?://\|\|g"| sort -u | anew $projectName$-lives.txt
+      - cat $projectName$-final.txt | awk "{print \$1}" | hakip2host | awk "{print \$2}" | unfurl format $(echo "\%d") | sort -u | dnsx -re |tee  $projectName$-final1.txt
+      - cat $projectName$-final1.txt | awk "{print \$1}" | cero | sort -u | dnsx -re | tee $projectName$-final2.txt
+      - cat $projectName$-final2.txt | awk "{print \$1}" | httpx -silent -csp-probe -cdn -fhr | tee $projectName$-lives1.txt
+      - cat $projectName$-final2.txt > $projectName$-final.txt
+      - cat $projectName$-lives1.txt | sed "s|http[s]\?://\|\|g" | awk "{print \$1}" | httpx -silent -csp-probe -cdn -fhr | sed "s|http[s]\?://\|\|g"| sort -u > $projectName$-lives.txt
   - postRun:
       - $projectName$-passive.txt
       - $projectName$-final.txt
