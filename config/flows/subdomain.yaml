@@ -5,13 +5,16 @@ steps:
   - scripts:
       - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent -config $configPath$/subfinder.yaml
       - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
-      - findomain -t $domain$ | tee $projectName$-findomain.txt
+      - findomain -t $domain$ -o
       - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
       - crtsh $domain$ | tee  $projectName$-crt.txt
       - secrd $domain$ | tee  $projectName$-secrd.txt
       - rapidns $domain$ | tee  $projectName$-rapidns.txt
       - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
-      - cat $projectName$-* | sort -u > $projectName$-passive.txt
+      - cat $projectName$* | sort -u | tee $projectName$-passive1.txt
+      - cat $projectName$-passive1.txt | cero | tee $projectName$-cert1.txt
+      - cat $projectName$-cert1.txt | hakip2host | unfurl format "\%d" | awk "{print \$2}" | sort -u | tee $projectName$-cert2.txt
+      - cat $projectName$-passive1.txt $projectName$-cert1.txt $projectName$-cert2.txt | sort -u | tee $projectName$-passive.txt
   - switches:
       - WC: shuffledns -l $projectName$-passive.txt -o $projectName$-resolves.txt
       - NWC: dnsx -l $projectName$-passive.txt -o $projectName$-resolves.txt
@@ -25,11 +28,7 @@ steps:
   - switches:
       - AA: amass enum -active -d $domain$ | dnx -re | tee -a $projectName$-final.txt
   - scripts:
-      - cat $projectName$-final.txt | awk "{print \$1}" | hakip2host | awk "{print \$2}" | unfurl format %d | sort -u | dnsx -re | tee  $projectName$-final1.txt
-      - cat $projectName$-final.txt | awk "{print \$1}" | cero | sort -u | dnsx -re | tee $projectName$-final2.txt
-      - cat $projectName$-final1.txt $projectName$-final2.txt | awk "{print \$1}" | sort -u | httpx -silent -csp-probe -cdn -fhr | tee $projectName$-lives1.txt
-      - cat $projectName$-final1.txt $projectName$-final2.txt | sort -u > $projectName$-final.txt
-      - cat $projectName$-lives1.txt | sed "s|http[s]?://||g" | awk "{print \$1}" | httpx -silent -csp-probe -cdn -fhr | sed "s|http[s]?://||g"| sort -u > $projectName$-lives.txt
+      - cat $projectName$-final.txt | awk "{print \$1}" | sort -u | httpx -silent -csp-probe -cdn -fhr | tee $projectName$-lives.txt
   - postRun:
       - $projectName$-passive.txt
       - $projectName$-final.txt
