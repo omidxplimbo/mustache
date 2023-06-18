@@ -19,7 +19,7 @@ func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp
 		os.Exit(0)
 	}
 
-	if (*pr && *pp && *pn && *wcr) || (*pr && *pp) || (*pn && *pp) || (*pr && *pn) || (*pr && *pp && *wcr) || (*pn && *pp && *wcr) || (*pr && *pn && *wcr) {
+	if (*pr && *pp && *pn && *wcr) || (*pr && *pp) || (*pn && *pp) || (*pr && *pn) || (*pr && *wcr) || (*pp && *wcr) || (*pn && *wcr) || (*pr && *pp && *wcr) || (*pn && *pp && *wcr) || (*pr && *pn && *wcr) {
 		logger.Warning("You can use just one of the pr,pn,pp,wcr flag. Pleas use -h to show help")
 	}
 

@@ -23,6 +23,7 @@ type AllSwitches struct {
 	PN      interface{}
 	NWC     interface{}
 	AA      interface{}
+	WCR     interface{}
 }
 
 type CommandParams struct {
@@ -121,7 +122,12 @@ func setFlags(projectName string, target string, flagsMap map[string]interface{}
 			if v, ok := value.(bool); ok {
 				flags.AA = v
 			}
+		case "WCR":
+			if v, ok := value.(bool); ok {
+				flags.WCR = v
+			}
 		}
+
 	}
 
 	// Set NWC based on WC value
