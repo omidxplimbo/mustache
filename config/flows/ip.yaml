@@ -3,6 +3,6 @@ description: ip resolotion
 
 steps:
   - scripts:
-      - cat $projectName$-final.txt $projectName$-lives.txt | sed 's+http[s]*://++g' | sort -u | dnsx -re > $projectName$-sub-ip.txt
+      - cat $projectName$-final.txt $projectName$-lives.txt | awk '{ gsub("http[s]*://", ""); print }' | sort -u | dnsx -re > $projectName$-sub-ip.txt
   - postRun:
       - $projectName$-sub-ip.txt
