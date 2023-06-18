@@ -31,7 +31,7 @@ func General(projectName string, target string, wc bool, pr bool, pp bool, pn bo
 	runnerObj.ExecuteRoutines(data, projectName, target, wc, pr, pp, pn, aa)
 
 	// remove data
-	cmd := exec.Command("bash", "-c", fmt.Sprintf("rm %s-*", projectName))
+	cmd := exec.Command("bash", "-c", fmt.Sprintf("rm %s*", projectName))
 	_ = cmd.Run()
 	logger.Info(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
 	logger.AddLog(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
