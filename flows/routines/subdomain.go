@@ -24,11 +24,12 @@ type LiveHosts struct {
 }
 
 type checkAnySwitches struct {
-	WC bool
-	PR bool
-	PN bool
-	PP bool
-	AA bool
+	WC  bool
+	PR  bool
+	PN  bool
+	PP  bool
+	AA  bool
+	WCR bool
 }
 
 func SubDomain(args ...interface{}) {
@@ -41,17 +42,19 @@ func SubDomain(args ...interface{}) {
 	pp := args[4].(bool)
 	pn := args[5].(bool)
 	aa := args[6].(bool)
+	wcr := args[7].(bool)
 
 	// parse yaml files
 	data := parser.Parser{}.YamlParse("subdomain", true)
 
 	// set flags
 	allFlags := checkAnySwitches{
-		WC: wc,
-		PR: pr,
-		PN: pn,
-		PP: pp,
-		AA: aa,
+		WC:  wc,
+		PR:  pr,
+		PN:  pn,
+		PP:  pp,
+		AA:  aa,
+		WCR: wcr,
 	}
 	flagsMap := make(map[string]interface{})
 	flagsMap["WC"] = allFlags.WC
@@ -59,6 +62,7 @@ func SubDomain(args ...interface{}) {
 	flagsMap["PN"] = allFlags.PN
 	flagsMap["PP"] = allFlags.PP
 	flagsMap["AA"] = allFlags.AA
+	flagsMap["WCR"] = allFlags.WCR
 
 	// run flow
 	flows.RunnerFlow{}.ExecuteFlows(data, projectName, target, flagsMap)

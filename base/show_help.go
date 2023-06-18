@@ -15,6 +15,7 @@ func ShowHelp() {
 		-flow [string]	"Select flow that you want to run. Each module has some flow"
 		-project [string]	"Project that you want use for modules"
 		-target [string]	"The target that we want run processes"
+		 mustache -server -port [port] "Run server gor Ui"
 	`
 	usageProject := `
 	Flags and usage for project module:
@@ -34,7 +35,8 @@ func ShowHelp() {
 		-pn	"If set we dont use permutation in subdomains"
 		-pr	"If set we use permutation just in resolved subdomains"
 		-pp	"If set we use permutation for all subdomains. Should use for small target"
-		-aa	"If set we use active amass for subdomains. It's take long time'"
+		-aa	"If set we use active amass for subdomains. It's take long time"
+		-wcr "If set we use permutation for wildcard domains"
 		-target string	"The target that we want run processes"
 
 		mustache -module recon -flow [flowName] -project [projectName] -target [targetName] [-wc] [-pn] [-pr] [-pp]`

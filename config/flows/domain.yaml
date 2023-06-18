@@ -1,0 +1,8 @@
+name: subdomain
+description: Subdomain enumeration passive and active
+
+steps:
+  - scripts:
+      - cat $projectName$-cero.txt | unfurl format %r.%t | sort -u > $projectName$-rootDomain.txt
+  - postRun:
+      - $projectName$-rootDomain.txt

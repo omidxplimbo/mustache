@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func General(projectName string, target string, wc bool, pr bool, pp bool, pn bool, aa bool) {
+func General(projectName string, target string, wc bool, pr bool, pp bool, pn bool, aa bool, wcr bool) {
 
 	projectConfig := config.ProjectConfig()
 
@@ -28,7 +28,7 @@ func General(projectName string, target string, wc bool, pr bool, pp bool, pn bo
 	data := parserObj.YamlParse("general", false)
 
 	// execute routine
-	runnerObj.ExecuteRoutines(data, projectName, target, wc, pr, pp, pn, aa)
+	runnerObj.ExecuteRoutines(data, projectName, target, wc, pr, pp, pn, aa, wcr)
 
 	// remove data
 	cmd := exec.Command("bash", "-c", fmt.Sprintf("rm %s-*", projectName))
