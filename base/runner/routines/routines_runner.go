@@ -12,6 +12,7 @@ type RoutineRunner struct {
 func (r RoutineRunner) ExecuteRoutines(data map[string]interface{}, args ...interface{}) {
 	routineMap := map[string]func(...interface{}){
 		"subdomain": routines.SubDomain,
+		"ip":        routines.Ip,
 	}
 
 	routinesGet, ok := data["routine"].([]interface{})

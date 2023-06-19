@@ -2,3 +2,4 @@ name: general
 description: General Routine For Recon
 routine:
   - subdomain
+  - ip
