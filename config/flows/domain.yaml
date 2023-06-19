@@ -3,6 +3,6 @@ description: root domain resolutions
 
 steps:
   - scripts:
-      - cat $projectName$-cero.txt | grep -v -f $configPath$/excludeDomain.txt | unfurl format %r.%t  | sort -u  | tee $projectName$-root-domain.txt
+      - cat $projectName$-cero.txt | grep -v -f $excludeDomain$/excludeDomain.txt | unfurl format %r.%t  | sort -u  | tee $projectName$-root-domain.txt
   - postRun:
       - $projectName$-root-domain.txt

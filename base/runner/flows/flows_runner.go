@@ -33,6 +33,7 @@ type CommandParams struct {
 	ResolverPath string
 	WordListPath string
 	ChaosApi     string
+	BinaryConfig string
 }
 
 func (f RunnerFlow) ExecuteFlows(data map[string]interface{}, projectName string, target string, flagMap map[string]interface{}) []interface{} {
@@ -150,6 +151,7 @@ func setParams(projectName string, target string) CommandParams {
 		ChaosApi:     config.ProjectConfig().Providers.ChaosApi,
 		WordListPath: strings.ReplaceAll(config.ProjectConfig().Addresses.Wordlist, "{{projectPath}}", dir),
 		ResolverPath: strings.ReplaceAll(config.ProjectConfig().Addresses.Resolvers, "{{projectPath}}", dir),
+		BinaryConfig: strings.ReplaceAll(config.ProjectConfig().Addresses.BinaryConfig, "{{projectPath}}", dir),
 	}
 
 	return params
@@ -170,7 +172,7 @@ func runCommand(command string, params CommandParams) {
 func replaceVariables(command string, params CommandParams) string {
 	command = strings.ReplaceAll(command, "$domain$", params.Target)
 	command = strings.ReplaceAll(command, "$projectName$", params.Project)
-	command = strings.ReplaceAll(command, "$configPath$", params.ConfigPath)
+	command = strings.ReplaceAll(command, "$configPath$", params.BinaryConfig)
 	command = strings.ReplaceAll(command, "$chaosApi$", params.ChaosApi)
 	command = strings.ReplaceAll(command, "$resolver$", params.ResolverPath)
 	command = strings.ReplaceAll(command, "$wordlist$", params.WordListPath)

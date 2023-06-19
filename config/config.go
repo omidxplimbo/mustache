@@ -14,13 +14,14 @@ type Config struct {
 	MongoUrl  string `json:"mongoUrl"`
 	TimeShow  string `json:"timeShow"`
 	Addresses struct {
-		Wordlist  string `json:"wordlist"`
-		Resolvers string `json:"resolvers"`
-		Configs   string `json:"configs"`
-		Binaries  string `json:"binaries"`
-		Logs      string `json:"logs"`
-		Routines  string `json:"routines"`
-		Flows     string `json:"flows"`
+		Wordlist     string `json:"wordlist"`
+		Resolvers    string `json:"resolvers"`
+		Configs      string `json:"configs"`
+		BinaryConfig string `json:"binaryConfig"`
+		Binaries     string `json:"binaries"`
+		Logs         string `json:"logs"`
+		Routines     string `json:"routines"`
+		Flows        string `json:"flows"`
 	} `json:"addresses"`
 	Collections []string `json:"collections"`
 	PublicError struct {
