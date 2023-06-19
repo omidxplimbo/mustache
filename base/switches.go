@@ -127,7 +127,7 @@ func watchHandle(flow string, projectName string, count int, target string, just
 	watch := watchModule.Watch{}
 	switch flow {
 	case "subdomain":
-		watch.Subdomain(projectName)
+		watch.Subdomain(projectName, justCount)
 	case "latest-sub":
 		watch.LatestSubdomain(projectName, count)
 	case "lives":

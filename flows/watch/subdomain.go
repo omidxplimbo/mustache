@@ -2,10 +2,10 @@ package watch
 
 import "github.com/omidxplimbo/mustache/db"
 
-func GetAllSubdomain(projectName string) {
+func GetAllSubdomain(projectName string, justCount *bool) {
 
 	subdomain := db.Subdomain{}
-	subdomain.GetAllSubdomain(projectName)
+	subdomain.GetAllSubdomain(projectName, justCount)
 }
 
 func LatestSubdomain(projectName string, count int) {

@@ -8,14 +8,14 @@ import (
 
 type Watch struct{}
 
-func (w Watch) Subdomain(projectName string) {
+func (w Watch) Subdomain(projectName string, justCount *bool) {
 	if projectName == "" {
 		logger.Fetal("Project flag is required. Please use -h for help.")
 		os.Exit(0)
 	}
 
 	// send request to flow if exists
-	watch.GetAllSubdomain(projectName)
+	watch.GetAllSubdomain(projectName, justCount)
 }
 
 func (w Watch) LatestSubdomain(projectName string, count int) {
