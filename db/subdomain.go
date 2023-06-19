@@ -43,7 +43,7 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 		filter := bson.M{"subdomain": subdomain.Subdomain}
 		update := bson.M{"$set": bson.M{}}
 
-		if subdomain.Domain != "" {
+		if subdomain.Domain != s.Domain {
 			update["$set"].(bson.M)["domain"] = subdomain.Domain
 		}
 		if subdomain.Http != s.Http {
@@ -52,10 +52,10 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 		if subdomain.CDN != s.CDN {
 			update["$set"].(bson.M)["cdn"] = subdomain.CDN
 		}
-		if subdomain.IP != "" {
+		if subdomain.IP != s.IP {
 			update["$set"].(bson.M)["ip"] = subdomain.IP
 		}
-		if subdomain.CIDR != "" {
+		if subdomain.CIDR != s.CIDR {
 			update["$set"].(bson.M)["cidr"] = subdomain.CIDR
 		}
 

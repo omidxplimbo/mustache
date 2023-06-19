@@ -77,7 +77,7 @@ func setIpSubdomain(projectName string) {
 		parts := strings.Split(line, " ")
 
 		// Ensure there are exactly 2 parts (subdomain and IP)
-		if len(parts) >= 2 {
+		if len(parts) > 2 {
 			subdomain := parts[0]
 			ip := strings.Trim(parts[1], "[]")
 
