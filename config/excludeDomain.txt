@@ -5,3 +5,4 @@ github
 facebook
 gitlab
 linkedin
+youtube

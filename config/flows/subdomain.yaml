@@ -28,8 +28,8 @@ steps:
   - scripts:
       - cat $projectName$-final.txt | sort -u | httpx -silent -csp-probe | tee $projectName$-lives1.txt
       - cat $projectName$-lives1.txt | awk '{ gsub("http[s]*://", ""); print }'| cero | sort -u | tee $projectName$-cero.txt | grep $domain$ | tee $projectName$-cero-grep.txt
-      - cat $projectName$-cero-grep.txt | httpx -silent | tee $projectName$-lives.txt
-      - cat $projectName$-lives1.txt $projectName$-lives.txt | anew $projectName$-lives.txt
+      - cat $projectName$-cero-grep.txt | httpx -silent | tee $projectName$-lives2.txt
+      - cat $projectName$-lives1.txt $projectName$-lives2.txt | grep $domain$ | sort -u | tee $projectName$-lives.txt
       - cat $projectName$-cero-grep.txt $projectName$-passive.txt |  anew $projectName$-passive.txt
   - postRun:
       - $projectName$-passive.txt
