@@ -46,7 +46,7 @@ func Domain(args ...interface{}) {
 	// run flow
 	flows.RunnerFlow{}.ExecuteFlows(data, projectName, target, flagsMap)
 
-	setIpSubdomain(projectName)
+	setDomain(projectName)
 
 }
 
