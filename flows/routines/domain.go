@@ -11,11 +11,6 @@ import (
 	"time"
 )
 
-type DomainResolved struct {
-	Subdomain string
-	Ip        string
-}
-
 func Domain(args ...interface{}) {
 
 	//Set arguments
@@ -82,7 +77,7 @@ func setDomain(projectName string) {
 				continue
 			}
 			domainModel := db.Domain{
-				Domain:      "",
+				Domain:      line,
 				CreatedDate: time.Now(),
 				UpdatedDate: time.Now(),
 			}
