@@ -1,5 +1,5 @@
 name: ip
-description: ip resolotion
+description: Ip resolution
 
 steps:
   - scripts:

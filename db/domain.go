@@ -86,7 +86,7 @@ func (d Domain) GetAllDomains(projectName string, justCount *bool) {
 	logger.Info(fmt.Sprintf("Domains for %s project:", projectName))
 	logger.Info(fmt.Sprintf("Count of domain for %s project is: %d", projectName, count))
 
-	if *justCount {
+	if !*justCount {
 		for cursor.Next(context.Background()) {
 			var result bson.M
 			err := cursor.Decode(&result)

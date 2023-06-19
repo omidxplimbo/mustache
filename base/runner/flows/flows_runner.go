@@ -174,6 +174,7 @@ func replaceVariables(command string, params CommandParams) string {
 	command = strings.ReplaceAll(command, "$chaosApi$", params.ChaosApi)
 	command = strings.ReplaceAll(command, "$resolver$", params.ResolverPath)
 	command = strings.ReplaceAll(command, "$wordlist$", params.WordListPath)
+	command = strings.ReplaceAll(command, "$excludeDomain$", params.ConfigPath)
 	return command
 }
 

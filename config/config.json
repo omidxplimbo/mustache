@@ -32,14 +32,5 @@
   "providers": {
     "chaosApi": "FgD0j31YWBOenZdMkeysfuorGYP1oRUQ6waMDH1XcBYR0Pap3q1CFlei7k19tYGW",
     "crtSh": "Must bash handle"
-  },
-  "excludeDomain": [
-    "google",
-    "yahoo",
-    "twitter",
-    "github",
-    "facebook",
-    "gitlab",
-    "linkedin"
-  ]
+  }
 }
