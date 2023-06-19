@@ -24,7 +24,7 @@ func Domain(args ...interface{}) {
 	wcr := args[7].(bool)
 
 	// parse yaml files
-	data := parser.Parser{}.YamlParse("ip", true)
+	data := parser.Parser{}.YamlParse("domain", true)
 
 	// set flags
 	allFlags := checkAnySwitches{

@@ -1,5 +1,5 @@
-name: subdomain
-description: Subdomain enumeration passive and active
+name: domain
+description: root domain resolutions
 
 steps:
   - scripts:
