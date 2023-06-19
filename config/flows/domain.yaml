@@ -3,6 +3,6 @@ description: Subdomain enumeration passive and active
 
 steps:
   - scripts:
-      - cat $projectName$-cero.txt | unfurl format %r.%t | sort -u > $projectName$-rootDomain.txt
+      - cat $projectName$-cero.txt | unfurl format %r.%t | sort -u > $projectName$-root-domain.txt
   - postRun:
-      - $projectName$-rootDomain.txt
+      - $projectName$-root-domain.txt

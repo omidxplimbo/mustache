@@ -13,6 +13,7 @@ func (r RoutineRunner) ExecuteRoutines(data map[string]interface{}, args ...inte
 	routineMap := map[string]func(...interface{}){
 		"subdomain": routines.SubDomain,
 		"ip":        routines.Ip,
+		"domain":    routines.Domain,
 	}
 
 	routinesGet, ok := data["routine"].([]interface{})
