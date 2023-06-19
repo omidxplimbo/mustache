@@ -17,7 +17,7 @@ type Domain struct {
 	UpdatedDate time.Time `bson:"updated_date"`
 }
 
-func (s Domain) InsertDomain(data []Domain, projectName string) {
+func (d Domain) InsertDomain(data []Domain, projectName string) {
 	// Get project config
 	configProject := config.ProjectConfig()
 
@@ -28,7 +28,7 @@ func (s Domain) InsertDomain(data []Domain, projectName string) {
 	dbName := configProject.DbPrefix + projectName
 
 	// Insert the array of data into the MongoDB collection
-	collection := client.Database(dbName).Collection(configProject.Collections[0])
+	collection := client.Database(dbName).Collection(configProject.Collections[1])
 
 	var updates []mongo.WriteModel
 
