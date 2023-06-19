@@ -50,8 +50,11 @@ func ShowHelp() {
 
 		mustache -module watch -flow subdomain -project [projectName] [-jc]
 		mustache -module watch -flow domain -project [projectName] [-jc]
+		mustache -module watch -flow get-domain -project [projectName] -target [targetName]
 		mustache -module watch -flow tech -project [projectName] [-jc]
 		mustache -module watch -flow latest-lives -project [projectName] [-jc] -count [count]
+		mustache -module watch -flow resolved -project [projectName] [-jc]
+		mustache -module watch -flow lives -project [projectName] [-jc]
 `
 	color.HiYellow(usagePublic)
 	color.HiBlue(usageProject)
@@ -96,6 +99,7 @@ func ShowHelp() {
 		{"latest-urls", "Get latest added urls of project (default 10 record)", "Watch"},
 		{"latest-domain", "Get latest added domain of project (default 10 record)", "Watch"},
 		{"get-sub", "Get Subdomain information of project", "Watch"},
+		{"get-domain", "Get root domain information of project", "Watch"},
 	}
 
 	update := [][]string{

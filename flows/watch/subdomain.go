@@ -37,3 +37,15 @@ func ResolvedSubdomain(projectName string, justCount *bool) {
 	subdomain := db.Subdomain{}
 	subdomain.ResolvedSubdomain(projectName, justCount)
 }
+
+func Domain(projectName string, justCount *bool) {
+
+	domain := db.Domain{}
+	domain.GetAllDomains(projectName, justCount)
+}
+
+func GetDomain(projectName string, target string) {
+
+	domain := db.Domain{}
+	domain.GetDomain(projectName, target)
+}

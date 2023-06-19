@@ -136,6 +136,10 @@ func watchHandle(flow string, projectName string, count int, target string, just
 		watch.LatestLivesSubdomain(projectName, count)
 	case "get-sub":
 		watch.GetSub(projectName, target)
+	case "get-domain":
+		watch.GetDomain(projectName, target)
+	case "domain":
+		watch.Domain(projectName, justCount)
 	case "resolved":
 		watch.Resolved(projectName, justCount)
 
