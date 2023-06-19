@@ -22,12 +22,32 @@ func Ip(args ...interface{}) {
 	//Set arguments
 	projectName := args[0].(string)
 	target := args[1].(string)
+	wc := args[2].(bool)
+	pr := args[3].(bool)
+	pp := args[4].(bool)
+	pn := args[5].(bool)
+	aa := args[6].(bool)
+	wcr := args[7].(bool)
 
 	// parse yaml files
 	data := parser.Parser{}.YamlParse("ip", true)
 
-	// no switch
-	var flagsMap map[string]interface{}
+	// set flags
+	allFlags := checkAnySwitches{
+		WC:  wc,
+		PR:  pr,
+		PN:  pn,
+		PP:  pp,
+		AA:  aa,
+		WCR: wcr,
+	}
+	flagsMap := make(map[string]interface{})
+	flagsMap["WC"] = allFlags.WC
+	flagsMap["PR"] = allFlags.PR
+	flagsMap["PN"] = allFlags.PN
+	flagsMap["PP"] = allFlags.PP
+	flagsMap["AA"] = allFlags.AA
+	flagsMap["WCR"] = allFlags.WCR
 
 	// run flow
 	flows.RunnerFlow{}.ExecuteFlows(data, projectName, target, flagsMap)

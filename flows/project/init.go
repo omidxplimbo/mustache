@@ -54,10 +54,21 @@ func InitiateProject(projectName string) {
 			}
 		}()
 
-		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[1])
-		if err != nil {
-			log.Fatal(err)
-		}
+		func() {
+			err := client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[1])
+			if err != nil {
+				log.Fatal(err)
+			}
+			collection := client.Database(dbName).Collection(configProject.Collections[1])
+			indexModel := mongo.IndexModel{
+				Keys:    bson.M{"domain": 1},
+				Options: options.Index().SetUnique(true),
+			}
+			_, err = collection.Indexes().CreateOne(context.Background(), indexModel)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 		err = client.Database(dbName).CreateCollection(context.Background(), configProject.Collections[2])
 		if err != nil {
 			log.Fatal(err)
