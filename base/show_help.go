@@ -15,6 +15,7 @@ func ShowHelp() {
 		-flow [string]	"Select flow that you want to run. Each module has some flow"
 		-project [string]	"Project that you want use for modules"
 		-target [string]	"The target that we want run processes"
+		 mustache -server -port [port] "Run server gor Ui"
 	`
 	usageProject := `
 	Flags and usage for project module:
@@ -34,6 +35,8 @@ func ShowHelp() {
 		-pn	"If set we dont use permutation in subdomains"
 		-pr	"If set we use permutation just in resolved subdomains"
 		-pp	"If set we use permutation for all subdomains. Should use for small target"
+		-aa	"If set we use active amass for subdomains. It's take long time"
+		-wcr "If set we use permutation for wildcard domains"
 		-target string	"The target that we want run processes"
 
 		mustache -module recon -flow [flowName] -project [projectName] -target [targetName] [-wc] [-pn] [-pr] [-pp]`
@@ -47,8 +50,11 @@ func ShowHelp() {
 
 		mustache -module watch -flow subdomain -project [projectName] [-jc]
 		mustache -module watch -flow domain -project [projectName] [-jc]
+		mustache -module watch -flow get-domain -project [projectName] -target [targetName]
 		mustache -module watch -flow tech -project [projectName] [-jc]
 		mustache -module watch -flow latest-lives -project [projectName] [-jc] -count [count]
+		mustache -module watch -flow resolved -project [projectName] [-jc]
+		mustache -module watch -flow lives -project [projectName] [-jc]
 `
 	color.HiYellow(usagePublic)
 	color.HiBlue(usageProject)
@@ -93,6 +99,7 @@ func ShowHelp() {
 		{"latest-urls", "Get latest added urls of project (default 10 record)", "Watch"},
 		{"latest-domain", "Get latest added domain of project (default 10 record)", "Watch"},
 		{"get-sub", "Get Subdomain information of project", "Watch"},
+		{"get-domain", "Get root domain information of project", "Watch"},
 	}
 
 	update := [][]string{

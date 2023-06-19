@@ -9,7 +9,7 @@ import (
 
 type Recon struct{}
 
-func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp *bool, pn *bool) {
+func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp *bool, pn *bool, aa *bool, wcr *bool) {
 	if projectName == "" {
 		log.Fatal("Project flag is required. Please use -h for help.")
 		os.Exit(0)
@@ -19,8 +19,8 @@ func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp
 		os.Exit(0)
 	}
 
-	if (*pr && *pp && *pn) || (*pr && *pp) || (*pn && *pp) || (*pr && *pn) {
-		logger.Warning("You can use just one of the pr,pn,pp flag. Pleas use -h to show help")
+	if (*pr && *pp && *pn && *wcr) || (*pr && *pp) || (*pn && *pp) || (*pr && *pn) || (*pr && *wcr) || (*pp && *wcr) || (*pn && *wcr) || (*pr && *pp && *wcr) || (*pn && *pp && *wcr) || (*pr && *pn && *wcr) {
+		logger.Warning("You can use just one of the pr,pn,pp,wcr flag. Pleas use -h to show help")
 	}
 
 	if !*pr && !*pp && !*pn {
@@ -28,5 +28,5 @@ func (r Recon) General(projectName string, target string, wc *bool, pr *bool, pp
 	}
 
 	// send request to flow if exists
-	recon.General(projectName, target, *wc, *pr, *pp, *pn)
+	recon.General(projectName, target, *wc, *pr, *pp, *pn, *aa, *wcr)
 }

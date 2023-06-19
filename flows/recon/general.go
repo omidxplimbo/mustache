@@ -2,16 +2,16 @@ package recon
 
 import (
 	"fmt"
+	"github.com/omidxplimbo/mustache/base/parser"
+	"github.com/omidxplimbo/mustache/base/runner/routines"
 	"github.com/omidxplimbo/mustache/config"
 	"github.com/omidxplimbo/mustache/db"
-	recon "github.com/omidxplimbo/mustache/flows/recon/routines"
 	"github.com/omidxplimbo/mustache/logger"
-	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"os/exec"
 	"time"
 )
 
-func General(projectName string, target string, wc bool, pr bool, pp bool, pn bool) {
+func General(projectName string, target string, wc bool, pr bool, pp bool, pn bool, aa bool, wcr bool) {
 
 	projectConfig := config.ProjectConfig()
 
@@ -19,28 +19,20 @@ func General(projectName string, target string, wc bool, pr bool, pp bool, pn bo
 	db.CheckProject(projectName)
 
 	logger.Info(fmt.Sprintf("Running general flow at: %s", time.Now().Format(projectConfig.TimeShow)))
+	logger.AddLog(fmt.Sprintf("Running general flow at: %s", time.Now().Format(projectConfig.TimeShow)))
 
-	// Check yaml files for get all routines in the general flow
-	generalFlow, err := ioutil.ReadFile("config/base-routine/general.yaml")
-	if err != nil {
-		logger.Fetal("Yaml Configuration not exist")
-	}
+	// parse yaml files
+	parserObj := parser.Parser{}
+	runnerObj := routines.RoutineRunner{}
 
-	// Unmarshal the YAML into a map[string]interface{}
-	var data map[string]interface{}
-	err = yaml.Unmarshal(generalFlow, &data)
-	if err != nil {
-		logger.Fetal("Yaml Configuration not exist")
-	}
+	data := parserObj.YamlParse("general", false)
 
-	for _, routine := range data["routine"].([]interface{}) {
-		switch routine {
-		case "subdomain":
-			recon.SubDomain(projectName, target, pr, pn, pp, wc)
-		default:
-			logger.Warning(fmt.Sprintf("There isn't any routins in the general flow"))
-		}
-	}
+	// execute routine
+	runnerObj.ExecuteRoutines(data, projectName, target, wc, pr, pp, pn, aa, wcr)
 
+	// remove data
+	cmd := exec.Command("bash", "-c", fmt.Sprintf("rm %s*", projectName))
+	_ = cmd.Run()
 	logger.Info(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
+	logger.AddLog(fmt.Sprintf("General flow done at: %s", time.Now().Format(projectConfig.TimeShow)))
 }

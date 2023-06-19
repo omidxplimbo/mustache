@@ -3,9 +3,11 @@ package base
 import (
 	"flag"
 	"fmt"
+	"github.com/omidxplimbo/mustache/logger"
 	projectModule "github.com/omidxplimbo/mustache/modules/project"
 	reconModule "github.com/omidxplimbo/mustache/modules/recon"
 	watchModule "github.com/omidxplimbo/mustache/modules/watch"
+	"github.com/omidxplimbo/mustache/ui"
 	"os"
 )
 
@@ -24,11 +26,19 @@ func HandleSwitch() {
 	pn := flag.Bool("pn", false, "Dont permutation subdomain")
 	pr := flag.Bool("pr", false, "Permutation just for resolved subdomain")
 	pp := flag.Bool("pp", false, "Permutation for all passive founded subdomain")
+	wcr := flag.Bool("wcr", false, "Permutation for wildcard subdomain")
 	wildCard := flag.Bool("wc", false, "Wildcard domain")
 	jc := flag.Bool("jc", false, "Get just count of items")
+	aa := flag.Bool("aa", false, "Set active amass")
+	port := flag.Int("port", 8080, "Set port for run server. Default port is 8080")
+	server := flag.Bool("server", false, "Run server ui")
 
 	flag.Parse()
 
+	if *server {
+		logger.Info(fmt.Sprintf("Running server at the 0.0.0.0:%d", *port))
+		ui.Server(*port)
+	}
 	// Show help function
 	if *help {
 		ShowHelp()
@@ -41,7 +51,7 @@ func HandleSwitch() {
 	case "continues":
 		continuesHandle(*flow, *projectName, *dbName, *pathFile, *target)
 	case "recon":
-		reconHandle(*flow, *projectName, *target, pr, pn, pp, wildCard)
+		reconHandle(*flow, *projectName, *target, pr, pn, pp, wildCard, aa, wcr)
 	case "watch":
 		watchHandle(*flow, *projectName, *count, *target, jc)
 	default:
@@ -50,14 +60,14 @@ func HandleSwitch() {
 
 }
 
-func reconHandle(flow string, projectName string, target string, pr *bool, pn *bool, pp *bool, wc *bool) {
+func reconHandle(flow string, projectName string, target string, pr *bool, pn *bool, pp *bool, wc *bool, aa *bool, wcr *bool) {
 
 	recon := reconModule.Recon{}
 	switch flow {
 	case "general":
-		recon.General(projectName, target, wc, pr, pp, pn)
+		recon.General(projectName, target, wc, pr, pp, pn, aa, wcr)
 	default:
-		fmt.Println("Recon Flow Very Soon")
+		fmt.Println("Wrong Selected Flow. Please use -h gor get help")
 	}
 }
 
@@ -117,7 +127,7 @@ func watchHandle(flow string, projectName string, count int, target string, just
 	watch := watchModule.Watch{}
 	switch flow {
 	case "subdomain":
-		watch.Subdomain(projectName)
+		watch.Subdomain(projectName, justCount)
 	case "latest-sub":
 		watch.LatestSubdomain(projectName, count)
 	case "lives":
@@ -126,6 +136,10 @@ func watchHandle(flow string, projectName string, count int, target string, just
 		watch.LatestLivesSubdomain(projectName, count)
 	case "get-sub":
 		watch.GetSub(projectName, target)
+	case "get-domain":
+		watch.GetDomain(projectName, target)
+	case "domain":
+		watch.Domain(projectName, justCount)
 	case "resolved":
 		watch.Resolved(projectName, justCount)
 

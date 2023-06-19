@@ -1,42 +1,37 @@
 name: subdomain
-description: subdomain enumeration passive and active
-Commands-passive:
-  - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent -config $configPath$/subfinder.yaml
-  - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
-  - findomain -t $domain$ | tee $projectName$-findomain.txt
-  - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
-  - crtsh $domain$ | tee  $projectName$-crt.txt
-  - secrd $domain$ | tee  $projectName$-secrd.txt
-  - rapidns $domain$ | tee  $projectName$-rapidns.txt
-  - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
-  - cat $projectName$-* | sort -u > $projectName$-passive.txt
+description: Subdomain enumeration passive and active
 
-Commands-wc:
-  - shuffledns -l $projectName$-passive.txt -o $projectName$-resolves.txt
-Commands-resolver:
-  - dnsx -l $projectName$-passive.txt -o $projectName$-resolves.txt
-
-Commands-bruteForce:
-  - puredns bruteforce $wordlist$/wordlist.txt $domain$ --resolvers $resolver$/resolver.txt > $projectName$-puredns.txt
-  - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u > $projectName$-full-resolves.txt
-
-Commands-pr:
-  - cat $projectName$-full-resolves.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
-
-Commands-pp:
-  - cat $projectName$-puredns.txt $projectName$-passive.txt | dnsgen - | dnsx -re -silent | sort -u > $projectName$-final.txt
-
-Commands-pn:
-  - cat $projectName$-full-resolves.txt | dnsx -re | sort -u > $projectName$-final.txt
-
-Commands-lives:
-  - cat $projectName$-finalLive.txt | httpx -silent -follow-host-redirects -cdn | sort -u > $projectName$-lives.txt
-
-Commands-final:
-  - rm $projectName$-*
-
-
-
-
-
-
+steps:
+  - scripts:
+      - subfinder -d $domain$ -all -o $projectName$-subfinder.txt -silent -config $configPath$/subfinder.yaml
+      - amass enum -passive -d $domain$ -config $configPath$/amass.ini -o $projectName$-amass.txt -silent
+      - findomain -t $domain$ -o
+      - chaos -d $domain$ -key $chaosApi$ -o $projectName$-chaos.txt
+      - crtsh $domain$ | tee  $projectName$-crt.txt
+      - secrd $domain$ | tee  $projectName$-secrd.txt
+      - rapidns $domain$ | tee  $projectName$-rapidns.txt
+      - assetfinder -subs-only $domain$ > $projectName$-assetFinder.txt
+      - cat $projectName$* | sort -u | tee $projectName$-passive.txt
+  - switches:
+      - WC: shuffledns -l $projectName$-passive.txt  -r $resolver$/resolver.txt -o $projectName$-resolves.txt
+      - NWC: dnsx -l $projectName$-passive.txt -o $projectName$-resolves.txt
+  - scripts:
+      - puredns bruteforce $wordlist$/wordlist.txt $domain$ --resolvers $resolver$/resolver.txt > $projectName$-puredns.txt
+      - cat $projectName$-puredns.txt $projectName$-resolves.txt | sort -u > $projectName$-full-resolves.txt
+  - switches:
+      - WCR: cat $projectName$-full-resolves.txt | dnsgen - | shuffledns -r $resolver$/resolver.txt -d $domain$ | sort -u > $projectName$-final.txt
+      - PR: cat $projectName$-full-resolves.txt | dnsgen - | dnsx -silent | sort -u > $projectName$-final.txt
+      - PP: cat $projectName$-full-resolves.txt $projectName$-passive.txt | dnsgen - | dnsx -silent | sort -u > $projectName$-final.txt
+      - PN: cat $projectName$-full-resolves.txt | dnsx -silent | sort -u > $projectName$-final.txt
+  - switches:
+      - AA: amass enum -active -d $domain$ | dnx -silent | tee -a $projectName$-final.txt
+  - scripts:
+      - cat $projectName$-final.txt | sort -u | httpx -silent -csp-probe | grep $domain$ |tee $projectName$-lives1.txt
+      - cat $projectName$-lives1.txt | awk '{ gsub("http[s]*://", ""); print }'| cero | sort -u | tee $projectName$-cero.txt | grep $domain$ | anew $projectName$-cero-grep.txt
+      - cat $projectName$-cero-grep.txt | httpx -silent | tee $projectName$-lives2.txt
+      - cat $projectName$-lives1.txt $projectName$-lives2.txt | sort -u | tee $projectName$-lives.txt
+      - cat $projectName$-cero-grep.txt $projectName$-passive.txt |  anew $projectName$-passive.txt
+  - postRun:
+      - $projectName$-passive.txt
+      - $projectName$-final.txt
+      - $projectName$-lives.txt
