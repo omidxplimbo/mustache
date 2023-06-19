@@ -38,9 +38,11 @@ func (d Domain) InsertDomain(data []Domain, projectName string) {
 
 		if domain.Domain != "" {
 			update["$set"].(bson.M)["domain"] = domain.Domain
+			update["$set"].(bson.M)["updated_date"] = time.Now()
+		} else {
+			update["$setOnInsert"] = bson.M{"created_date": time.Now()}
 		}
 
-		update["$setOnInsert"] = bson.M{"created_date": time.Now()}
 		updateModel := mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update).SetUpsert(true)
 		updates = append(updates, updateModel)
 	}

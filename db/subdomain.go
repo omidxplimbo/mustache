@@ -58,7 +58,21 @@ func (s Subdomain) InsertSubdomain(data []Subdomain, projectName string) {
 		if subdomain.CIDR != "" {
 			update["$set"].(bson.M)["cidr"] = subdomain.CIDR
 		}
-		update["$setOnInsert"] = bson.M{"created_date": time.Now()}
+
+		// Check if subdomain already exists
+		count, err := collection.CountDocuments(context.Background(), filter, nil)
+		if err != nil {
+			logger.Fetal(err.Error())
+		}
+
+		if count > 0 {
+			// Subdomain already exists, set the updated_date field
+			update["$set"].(bson.M)["updated_date"] = time.Now()
+		} else {
+			// Subdomain is new, set the created_date field
+			update["$setOnInsert"] = bson.M{"created_date": time.Now()}
+		}
+
 		updateModel := mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update).SetUpsert(true)
 		updates = append(updates, updateModel)
 	}
