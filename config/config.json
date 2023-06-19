@@ -9,8 +9,8 @@
   "addresses": {
     "wordList": "{{projectPath}}/config/wordLists",
     "resolvers": "{{projectPath}}/config/resolvers",
-    "configs": "{{projectPath}}/config/binary-configs",
-    "BinaryConfig": "{{projectPath}}/config",
+    "configs": "{{projectPath}}/config",
+    "binaryConfig": "{{projectPath}}/config/binary-configs",
     "binaries": "{{home}}/mustache/binaries",
     "logs": "/tmp/mustache.log",
     "routines": "config/base-routine",
